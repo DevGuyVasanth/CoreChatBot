@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ChatBot\\CoreBot\\CoreBot\\CoreBot\\CoreBot.csproj": {}
+    "D:\\SVN Source\\CoreChatBot\\CoreBot.csproj": {}
   },
   "projects": {
-    "D:\\ChatBot\\CoreBot\\CoreBot\\CoreBot\\CoreBot.csproj": {
+    "D:\\SVN Source\\CoreChatBot\\CoreBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ChatBot\\CoreBot\\CoreBot\\CoreBot\\CoreBot.csproj",
+        "projectUniqueName": "D:\\SVN Source\\CoreChatBot\\CoreBot.csproj",
         "projectName": "CoreBot",
-        "projectPath": "D:\\ChatBot\\CoreBot\\CoreBot\\CoreBot\\CoreBot.csproj",
+        "projectPath": "D:\\SVN Source\\CoreChatBot\\CoreBot.csproj",
         "packagesPath": "C:\\Users\\47797\\.nuget\\packages\\",
-        "outputPath": "D:\\ChatBot\\CoreBot\\CoreBot\\CoreBot\\obj\\",
+        "outputPath": "D:\\SVN Source\\CoreChatBot\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
