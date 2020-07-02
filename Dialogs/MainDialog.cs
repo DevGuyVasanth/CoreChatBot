@@ -34,7 +34,8 @@ namespace CoreBot.Dialogs
         protected readonly ILogger Logger;
         IConfiguration _iconfiguration;
         string intentName = string.Empty;
-
+        bool IsinputCheck = false;
+		
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration)
             : base(nameof(MainDialog))
@@ -108,13 +109,23 @@ namespace CoreBot.Dialogs
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(intentName) || intentName == "None")
+            IsinputCheck = false;
+            if (string.IsNullOrEmpty(intentName) || intentName.ToUpper() == "NONE")
             {
                 intentName = (string)stepContext.Result;
-                if (intentName != "Create Incident" || intentName != "Check Incident Status" || intentName != "Retrieve Incidents" || intentName != "Top 5 Incidents List" || intentName != "Retrieve last 5 incidents")
-                {
+                if (intentName.ToUpper() == "CREATE INCIDENT") // || intentName.ToUpper() != "CHECK INCIDENT STATUS" || intentName.ToUpper() != "RETRIEVE INCIDENTS" || intentName.ToUpper() != "TOP 5 INCIDENTS LIST" || intentName.ToUpper() != "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "CHECK INCIDENT STATUS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "TOP 5 INCIDENTS LIST")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+
+                if (!IsinputCheck)
                     intentName = GetLuisJSON(intentName.ToLower());
-                }
             }
             if (!string.IsNullOrWhiteSpace(intentName))
             {
