@@ -48,25 +48,49 @@ D:\Product\Chat bot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfo
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.dll
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.pdb
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\appsettings.Development.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CognitiveModels\FlightBooking.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-new-rg.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-preexisting-rg.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\Cards\incidentCard.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\appsettings.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.deps.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.dll
-D:\ChatBot\CoreBot\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.pdb
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfo.cs
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.dll
-D:\ChatBot\CoreBot\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.pdb
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\appsettings.Development.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CognitiveModels\FlightBooking.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-new-rg.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-preexisting-rg.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\Cards\incidentCard.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\LUIS\Rbot.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\appsettings.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.deps.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.dll
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.pdb
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfo.cs
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.dll
+D:\kumaresanm\Dev\Chat Bot\01july2020\CoreBot\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.pdb
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\appsettings.Development.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\Cards\incidentCard.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CognitiveModels\FlightBooking.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-new-rg.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\DeploymentTemplates\template-with-preexisting-rg.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\LUIS\Rbot.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\Properties\launchSettings.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\appsettings.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.deps.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.dll
+D:\ChatBot\CoreBotLUIS\CoreBot\bin\Debug\netcoreapp2.1\CoreBot.pdb
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.AssemblyInfo.cs
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.dll
+D:\ChatBot\CoreBotLUIS\CoreBot\obj\Debug\netcoreapp2.1\CoreBot.pdb

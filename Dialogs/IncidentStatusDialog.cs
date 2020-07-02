@@ -18,6 +18,7 @@ namespace CoreBot.Dialogs
         private const string EmailIDStepMsgText = "Please enter your valid Email Id";
         private const string INCStatusChkStepMsgText = "Please enter the Incident number.";
         string restricOption = string.Empty;
+        bool isNotSkip = true;
 
         public IncidentStatusDialog() : base(nameof(IncidentStatusDialog))
         {
@@ -27,6 +28,7 @@ namespace CoreBot.Dialogs
             AddDialog(new DateResolverDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
+                InitConfirmStepAsync,
                 EmailIDStepAsync,
                 INCStatusCheckStepAsync,
                 ConfirmStepAsync,
@@ -37,21 +39,41 @@ namespace CoreBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        private async Task<DialogTurnResult> InitConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            string messageText = string.Empty;
+
+            var incidentDetails = (Incident)stepContext.Options;
+
+            messageText = "Are you sure you want to check incident status?";
+            if (incidentDetails.IncidentDesc == null)
+            {
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+        }
         private async Task<DialogTurnResult> EmailIDStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var incidentDetails = (Incident)stepContext.Options;
-            restricOption = string.Empty;
-            restricOption = (string)stepContext.Result;
-            if (restricOption == "Create Incident" || restricOption == "Check Incident Status" || restricOption == "Top 5 Incidents List")
-                return await stepContext.EndDialogAsync(null, cancellationToken);
-
-            incidentDetails.ChoiceID = "2";
-
-            if (incidentDetails.EmailID == null)
+            //restricOption = string.Empty;
+            //restricOption = (string)stepContext.Result;
+            //if (restricOption == "Create Incident" || restricOption == "Check Incident Status" || restricOption == "Top 5 Incidents List")
+            //    return await stepContext.EndDialogAsync(null, cancellationToken);
+            isNotSkip = (bool)stepContext.Result;
+            if (isNotSkip)
             {
-                //var promptMessage = MessageFactory.Text(EmailIDStepMsgText, EmailIDStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(EmailIDStepMsgText)) }, cancellationToken);
+                incidentDetails.ChoiceID = "2";
+
+                if (incidentDetails.EmailID == null)
+                {
+                    //var promptMessage = MessageFactory.Text(EmailIDStepMsgText, EmailIDStepMsgText, InputHints.ExpectingInput);
+                    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(EmailIDStepMsgText)) }, cancellationToken);
+                }
             }
+            else
+                return await stepContext.EndDialogAsync(null, cancellationToken);
 
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
@@ -90,8 +112,8 @@ namespace CoreBot.Dialogs
             messageText = $"Please confirm, you have requested for checking the status of the Incident #" + incidentDetails.IncidentNo + ". Is this correct?";
 
             //var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-           
-            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(messageText)), Style= ListStyle.HeroCard }, cancellationToken);
+
+            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(messageText)), Style = ListStyle.HeroCard }, cancellationToken);
         }
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {

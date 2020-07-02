@@ -1,0 +1,15 @@
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\appsettings.json
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\CoreBot.deps.json
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.json
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\CoreBot.dll
+D:\Product\Chat bot\CoreBot\CoreBot\bin\Release\netcoreapp2.1\CoreBot.pdb
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.csproj.CoreCompileInputs.cache
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfo.cs
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.dll
+D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.pdb

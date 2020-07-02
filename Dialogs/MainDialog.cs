@@ -33,6 +33,7 @@ namespace CoreBot.Dialogs
         private readonly FlightBookingRecognizer _luisRecognizer;
         protected readonly ILogger Logger;
         IConfiguration _iconfiguration;
+        string intentName = string.Empty;
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration)
@@ -48,6 +49,7 @@ namespace CoreBot.Dialogs
             AddDialog(lastFiveINCDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
+                InitiateStepAsync,
                 IntroStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
@@ -57,53 +59,80 @@ namespace CoreBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            Incident incidentDetails = new Incident();
+
+            if (incidentDetails.IncidentDesc == null)
+            {
+                var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Create Incident\"";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+
+            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+        }
+
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            string input = (string)stepContext.Result;
+            intentName = GetLuisJSON(input.ToLower());
+
             if (!_luisRecognizer.IsConfigured)
             {
-                //await stepContext.Context.SendActivityAsync(
-                //    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
-                Incident inc = new Incident();
-                var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\incidentCard.json");
-                JObject json = JObject.Parse(adaptiveCardJson);
-                var adaptiveCardAttachment = new Attachment()
+                if (string.IsNullOrEmpty(intentName) || intentName == "None")
                 {
-                    ContentType = "application/vnd.microsoft.card.adaptive",
-                    Content = JsonConvert.DeserializeObject(json.ToString()),
-                };
-                if (inc.IncidentDesc == null)
-                {
-                    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                    //await stepContext.Context.SendActivityAsync(
+                    //    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
+                    Incident inc = new Incident();
+                    var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\incidentCard.json");
+                    JObject json = JObject.Parse(adaptiveCardJson);
+                    var adaptiveCardAttachment = new Attachment()
+                    {
+                        ContentType = "application/vnd.microsoft.card.adaptive",
+                        Content = JsonConvert.DeserializeObject(json.ToString()),
+                    };
+                    if (inc.IncidentDesc == null)
+                    {
+                        return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                    }
                 }
-
                 return await stepContext.NextAsync(null, cancellationToken);
             }
 
             // Use the text provided in FinalStepAsync or the default if it is the first time.
-            var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Book a flight from Paris to Berlin on March 22, 2020\"";
+            var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Create Incident\"";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            string intentName = string.Empty;
-            intentName = (string)stepContext.Result;
-
-            if (!_luisRecognizer.IsConfigured)
+            if (string.IsNullOrEmpty(intentName) || intentName == "None")
             {
-                 
-                // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
-                if (intentName == "Create Incident")
-                    return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
-                else if (intentName == "Check Incident Status")
-                    return await stepContext.BeginDialogAsync(nameof(IncidentStatusDialog), new Incident(), cancellationToken);
-                else if (intentName == "Top 5 Incidents List")
-                    return await stepContext.BeginDialogAsync(nameof(LastFiveINCDialog), new Incident(), cancellationToken);
-                else
-                    return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
-                //return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                intentName = (string)stepContext.Result;
+                if (intentName != "Create Incident" || intentName != "Check Incident Status" || intentName != "Retrieve Incidents" || intentName != "Top 5 Incidents List" || intentName != "Retrieve last 5 incidents")
+                {
+                    intentName = GetLuisJSON(intentName.ToLower());
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(intentName))
+            {
+                if (!_luisRecognizer.IsConfigured)
+                {
 
+                    // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
+                    if (intentName == "Create Incident")
+                        return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                    else if (intentName == "Check Incident Status" || intentName == "Retrieve Incidents")
+                        return await stepContext.BeginDialogAsync(nameof(IncidentStatusDialog), new Incident(), cancellationToken);
+                    else if (intentName == "Top 5 Incidents List" || intentName == "Retrieve last 5 incidents")
+                        return await stepContext.BeginDialogAsync(nameof(LastFiveINCDialog), new Incident(), cancellationToken);
+                    else
+                        return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                    //return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+
+                }
             }
 
             // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
@@ -204,7 +233,7 @@ namespace CoreBot.Dialogs
                     string url = _iconfiguration.GetValue<string>("IncidentStatusCheckByID");
                     string incident_number = result.IncidentNo;
                     string status = apicall.CheckIncidentStatusByID(result.EmailID, result.IncidentNo, url);// "CANCELLED";
-                    if (string.IsNullOrWhiteSpace(status))
+                    if (string.IsNullOrWhiteSpace(status) || status == "Issue")
                         messageText = $"**Unable to find the status for Incident #{incident_number}.**";
                     else
                         messageText = $"Current status of this **#{incident_number} : {status}**";
@@ -229,6 +258,21 @@ namespace CoreBot.Dialogs
             // Restart the main dialog with a different message the second time around
             var promptMessage = "What else can I do for you?";
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+        }
+
+        private string GetLuisJSON(string input)
+        {
+            string intentName = string.Empty;
+            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\LUIS\\Rbot.json");
+            JObject json = JObject.Parse(adaptiveCardJson);
+            JObject match = json["utterances"].Values<JObject>().Where(m => m["text"].Value<string>() == input).FirstOrDefault();
+
+            if (match != null)
+                intentName = match["intent"].ToString();
+            else
+                intentName = "None";
+
+            return intentName;
         }
 
         //private string CreateIncident(string desc, string emailid, string json, string url)

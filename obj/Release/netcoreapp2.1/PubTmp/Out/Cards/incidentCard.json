@@ -1,0 +1,50 @@
+﻿{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
+        //{
+        //  "type": "Image",
+        //  "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
+        //  "size": "stretch"
+        //},
+        {
+            "type": "TextBlock",
+            "spacing": "medium",
+            "size": "default",
+            "weight": "bolder",
+            "text": "Please select from the below option to proceed.",
+            "wrap": true,
+            "maxLines": 0
+        }
+        //,
+        //{
+        //  "type": "TextBlock",
+        //  "size": "default",
+        //  "isSubtle": true,
+        //  "text": "Now that you have successfully run your bot, follow the links in this Adaptive Card to expand your knowledge of Bot Framework.",
+        //  "wrap": true,
+        //  "maxLines": 0
+        //}
+    ],
+
+
+    "actions": [
+      {
+        "type": "Action.Submit",
+        "title": "Create Incident",
+        "data": "Create Incident"
+
+      },
+      {
+        "type": "Action.Submit",
+        "title": "Check Incident Status",
+        "data": "Check Incident Status"
+      },
+      {
+        "type": "Action.Submit",
+        "title": "Top 5 Incidents List",
+        "data": "Top 5 Incidents List"
+      }
+    ]
+}

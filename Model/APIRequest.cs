@@ -63,8 +63,10 @@ namespace CoreBot.Model
                 JObject jObj = JObject.Parse(response.Item2);
                 IList<Object> results = jObj.SelectToken("result").Select(s => (Object)s).ToList();
 
-                if (results.Count > 0)
+                if (results.Count == 1)
                     status = Convert.ToString(jObj.SelectToken("result[0].state"));
+                else
+                    status = "Issue";
 
                 //Need check for all other status
                 if (status == "12")

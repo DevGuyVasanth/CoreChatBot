@@ -32,6 +32,7 @@ namespace CoreBot.Bots
             Dialog = dialog;
             Logger = logger;
         }
+
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             await base.OnTurnAsync(turnContext, cancellationToken);

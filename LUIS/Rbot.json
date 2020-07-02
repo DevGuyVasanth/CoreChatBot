@@ -1,0 +1,289 @@
+{
+  "luis_schema_version": "7.0.0",
+  "intents": [
+    {
+      "name": "Create Incident",
+      "features": [
+        {
+          "featureName": "Create Incident",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "None",
+      "features": []
+    },
+    {
+      "name": "Retrieve Incidents",
+      "features": []
+    },
+    {
+      "name": "Retrieve last 5 incidents",
+      "features": []
+    }
+  ],
+  "entities": [
+    {
+      "name": "Service Now",
+      "children": [],
+      "roles": [],
+      "features": [
+        {
+          "featureName": "Create Incident",
+          "isRequired": false
+        },
+        {
+          "featureName": "Get incident details",
+          "isRequired": false
+        },
+        {
+          "featureName": "retrive last 5 incident",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "Welcome",
+      "children": [],
+      "roles": [],
+      "features": [
+        {
+          "featureName": "Welcome",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "hierarchicals": [],
+  "composites": [],
+  "closedLists": [],
+  "prebuiltEntities": [],
+  "utterances": [
+    {
+      "text": "application issues",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "check status",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "check status for incident no",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "check status of incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "check status of last 5 incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "connectivity issue",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "create incident",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "facing trouble",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "get details of incidents",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "get incident details",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "get me the incident status",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "gm",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "good morning",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "having issues",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "hey",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "incident details",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "incident number",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "incident status",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "last 5 incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "problems",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "retrieve incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "retrieve last 5 incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "service now incident",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "service now last five incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "snow incident",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "snow last 5 tickets",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "status of incidents created",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "status of last 5 incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "status of last incident",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "track incident",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "track incident status",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "track last 5 incidents",
+      "intent": "Retrieve last 5 incidents",
+      "entities": []
+    },
+    {
+      "text": "track status",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "unable to connect",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
+      "text": "welcome",
+      "intent": "None",
+      "entities": []
+    }
+  ],
+  "versionId": "0.1",
+  "name": "Rbot",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "phraselists": [
+    {
+      "name": "Welcome",
+      "mode": true,
+      "words": "hi,hello,how r u,hey,good morning,greetings,good day,- hey there,thanx,friends,welcome",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "Create Incident",
+      "mode": true,
+      "words": "issues,iam having problems,incident,service now incident,not workin,unable to connect,page not repsonding,error message,create incident,runtime error,facing issues in connectivity,connectivity issues,application connectivity,servicenow,snow",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "Get incident details",
+      "mode": true,
+      "words": "incident details,incident number,lastly created incident,details of incident created,snow incidents,service now incident number,snow incident,service now incident,check details,check incident details,check based on incident no,check for incident",
+      "activated": true,
+      "enabledForAllModels": false
+    },
+    {
+      "name": "retrive last 5 incident",
+      "mode": true,
+      "words": "get incident details,servicenow incident details,check incidents,incidents created by me,snow incident details,incident,last incident details,service now incident",
+      "activated": true,
+      "enabledForAllModels": false
+    }
+  ],
+  "regex_features": [],
+  "patterns": [],
+  "settings": []
+}

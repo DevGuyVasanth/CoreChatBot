@@ -25,6 +25,8 @@ namespace CoreBot.Dialogs
         private const string PromptMsg = "Are you sure to reset the coversation?";
 
         string restricOption = string.Empty;
+        bool isNotSkip = true;
+
         public CreateIncidentDialog() : base(nameof(CreateIncidentDialog))
         {
 
@@ -33,6 +35,7 @@ namespace CoreBot.Dialogs
             AddDialog(new DateResolverDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
+                InitConfirmStepAsync,
                 IncidentDescStepAsync,
                 EmailIDStepAsync,
                 ConfirmStepAsync,
@@ -43,25 +46,47 @@ namespace CoreBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        private async Task<DialogTurnResult> InitConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            string messageText = string.Empty;
+
+            var incidentDetails = (Incident)stepContext.Options;
+
+            messageText = "Are you sure you want to create incident?";
+            if (incidentDetails.IncidentDesc == null)
+            {
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+
+                return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+        }
         private async Task<DialogTurnResult> IncidentDescStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var incidentDetails = (Incident)stepContext.Options;
-            restricOption = string.Empty;
-            restricOption = (string)stepContext.Result;
-            if (restricOption == "Create Incident" || restricOption == "Check Incident Status" || restricOption == "Top 5 Incidents List")
-                return await stepContext.EndDialogAsync(null, cancellationToken);
-            incidentDetails.ChoiceID = "1";
 
-            if (incidentDetails.IncidentDesc == null)
+            isNotSkip = (bool)stepContext.Result;
+            if (isNotSkip)
             {
-                //var promptMessage = MessageFactory.Text(IncidentDescStepMsgText, IncidentDescStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(IncidentDescStepMsgText)) }, cancellationToken);
+                //restricOption = string.Empty;
+                //restricOption = (string)stepContext.Result;
+                //if (restricOption == "Create Incident" || restricOption == "Check Incident Status" || restricOption == "Top 5 Incidents List")
+                //    return await stepContext.EndDialogAsync(null, cancellationToken);
+                incidentDetails.ChoiceID = "1";
 
-                //var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
-                //await stepContext.Context.SendActivityAsync(message, cancellationToken);
+                if (incidentDetails.IncidentDesc == null)
+                {
+                    //var promptMessage = MessageFactory.Text(IncidentDescStepMsgText, IncidentDescStepMsgText, InputHints.ExpectingInput);
+                    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(IncidentDescStepMsgText)) }, cancellationToken);
+
+                    //var message = MessageFactory.Text(messageText, messageText, InputHints.IgnoringInput);
+                    //await stepContext.Context.SendActivityAsync(message, cancellationToken);
+                }
             }
+            else
+                return await stepContext.EndDialogAsync(null, cancellationToken);
 
-            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+                return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
 
 
