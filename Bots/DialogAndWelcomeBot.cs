@@ -83,7 +83,6 @@ namespace CoreBot.Bots
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
             IDatabase db = connection.GetDatabase();
-            //string userId = "RamukDB5";
             var val = db.StringGet(botid);
 
             if (!val.IsNullOrEmpty)

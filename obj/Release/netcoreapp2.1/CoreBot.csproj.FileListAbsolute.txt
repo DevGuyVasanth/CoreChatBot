@@ -13,3 +13,28 @@ D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyIn
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.dll
 D:\Product\Chat bot\CoreBot\CoreBot\obj\Release\netcoreapp2.1\CoreBot.pdb
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\appsettings.Development.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\Cards\incidentCard.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CognitiveModels\FlightBooking.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\template-with-new-rg.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\template-with-preexisting-rg.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\LUIS\Rbot.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\Properties\launchSettings.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\appsettings.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.deps.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.dll
+E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.pdb
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfo.cs
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csproj.CoreCompileInputs.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.dll
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.pdb
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.genruntimeconfig.cache
