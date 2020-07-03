@@ -162,7 +162,7 @@ namespace CoreBot.Bots
             var reply = MessageFactory.Attachment(attachments);
             var signinCard = new SigninCard
             {
-                Text = "BotFramework Sign-in Card",
+                Text = "Login , BotId: " + botClientUserId,
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.Signin, "Sign-in", value: loginUrl) },
             };
             reply.Attachments.Add(signinCard.ToAttachment());
