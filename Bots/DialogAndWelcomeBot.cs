@@ -143,6 +143,13 @@ namespace CoreBot.Bots
             string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
+            var endpoints = connection.GetEndPoints(true);
+            foreach (var endpoint in endpoints)
+            {
+                var server = connection.GetServer(endpoint);
+                server.FlushAllDatabases();
+            }
+
             StackExchange.Redis.IDatabase db = connection.GetDatabase();
 
             SessionModel SessionModel = new SessionModel();

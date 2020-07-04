@@ -182,6 +182,13 @@ namespace CoreBot.Bots
             string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=False";
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
+            var endpoints = connection.GetEndPoints(true);
+            foreach (var endpoint in endpoints)
+            {
+                var server = connection.GetServer(endpoint);
+                server.FlushAllDatabases();
+            }
+
             StackExchange.Redis.IDatabase db = connection.GetDatabase();
 
             SessionModel SessionModel = new SessionModel();

@@ -31,6 +31,7 @@ namespace CoreBot.Model
             string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
+
             //IDatabase db = connection.GetDatabase();
             //string userId = "48124";
             //var val = db.StringGet(userId);
@@ -50,7 +51,7 @@ namespace CoreBot.Model
         {
             //Logger.LogInformation("UserLoginDetectService is starting.");
             Timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(2));
+                TimeSpan.FromSeconds(10));
 
             return Task.CompletedTask;
         }
