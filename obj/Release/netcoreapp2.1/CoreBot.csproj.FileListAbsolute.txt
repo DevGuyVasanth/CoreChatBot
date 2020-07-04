@@ -37,3 +37,26 @@ E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.dll
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.pdb
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.genruntimeconfig.cache
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\appsettings.Development.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\Cards\incidentCard.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CognitiveModels\FlightBooking.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\template-with-new-rg.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\DeploymentTemplates\template-with-preexisting-rg.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\LUIS\Rbot.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\Properties\launchSettings.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\appsettings.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.deps.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.dll
+D:\SVN Source\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.pdb
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cache
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorAssemblyInfo.cs
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfo.cs
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.cache
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.dll
+D:\SVN Source\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.pdb
