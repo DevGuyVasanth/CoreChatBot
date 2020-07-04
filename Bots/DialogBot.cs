@@ -101,7 +101,7 @@ namespace CoreBot.Bots
 
         public (bool, string, bool) CheckSignin(string botid)
         {
-            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=False";
+            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false,allowAdmin=true";
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
             IDatabase db = connection.GetDatabase();
@@ -179,8 +179,13 @@ namespace CoreBot.Bots
             }
             await turnContext.SendActivityAsync(reply, cancellationToken);
 
-            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=False";
+            //string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=False";
+            string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
+
+            //ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost,allowAdmin=true");
+            //var server = connection.GetServer(cacheConnectionString);
+            //server.FlushDatabase();
 
             var endpoints = connection.GetEndPoints(true);
             foreach (var endpoint in endpoints)
