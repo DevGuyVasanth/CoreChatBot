@@ -28,7 +28,6 @@ E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.json
 E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.runtimeconfig.dev.json
 E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.dll
 E:\GitHub\CoreChatBot\bin\Release\netcoreapp2.1\CoreBot.pdb
-E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfoInputs.cache
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.AssemblyInfo.cs
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csproj.CoreCompileInputs.cache
