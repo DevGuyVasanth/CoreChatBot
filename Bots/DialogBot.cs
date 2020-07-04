@@ -35,13 +35,12 @@ namespace CoreBot.Bots
         protected readonly IMemoryCache _cache;
         IConfiguration _iconfiguration;
 
-        public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IMemoryCache cache, IConfiguration iconfiguration)
+        public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IConfiguration iconfiguration)
         {
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
             Logger = logger;
-            _cache = cache;
             _iconfiguration = iconfiguration;
         }
 
@@ -130,14 +129,14 @@ namespace CoreBot.Bots
         private CacheUser GetLogOnUser(ITurnContext turnContext)
         {
             CacheUser user = null;
-            string userid = turnContext.Activity.From.Id;
-            string conversationId = turnContext.Activity.Conversation.Id;
-            List<CacheUser> users;
+            //string userid = turnContext.Activity.From.Id;
+            //string conversationId = turnContext.Activity.Conversation.Id;
+            //List<CacheUser> users;
 
-            if (_cache.TryGetValue("users", out users))
-            {
-                user = users.Find(u => u.BotClientUserId == userid && u.BotConversationId == conversationId && u.UserName != "");
-            }
+            //if (_cache.TryGetValue("users", out users))
+            //{
+            //    user = users.Find(u => u.BotClientUserId == userid && u.BotConversationId == conversationId && u.UserName != "");
+            //}
             return user;
         }
 
@@ -167,16 +166,16 @@ namespace CoreBot.Bots
             };
             reply.Attachments.Add(signinCard.ToAttachment());
 
-            List<CacheUser> users;
-            if (!_cache.TryGetValue("users", out users))
-            {
-                users = new List<CacheUser>();
-            }
-            if (!users.Any(u => u.BotClientUserId == botClientUserId && u.BotConversationId == botConversationId))
-            {
-                users.Add(new CacheUser(botClientUserId, botConversationId, turnContext, cancellationToken));
-                _cache.Set("users", users, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(7)));
-            }
+            //List<CacheUser> users;
+            //if (!_cache.TryGetValue("users", out users))
+            //{
+            //    users = new List<CacheUser>();
+            //}
+            //if (!users.Any(u => u.BotClientUserId == botClientUserId && u.BotConversationId == botConversationId))
+            //{
+            //    users.Add(new CacheUser(botClientUserId, botConversationId, turnContext, cancellationToken));
+            //    _cache.Set("users", users, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(7)));
+            //}
             await turnContext.SendActivityAsync(reply, cancellationToken);
 
             //string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=False";

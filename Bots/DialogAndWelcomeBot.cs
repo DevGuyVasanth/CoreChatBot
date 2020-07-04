@@ -29,12 +29,10 @@ namespace CoreBot.Bots
         IConfiguration _iconfiguration;
         ILogger<UserLoginDetectService> _logger;
 
-        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IMemoryCache cache, IConfiguration iconfiguration)
-            : base(conversationState, userState, dialog, logger, cache, iconfiguration)
+        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IConfiguration iconfiguration)
+            : base(conversationState, userState, dialog, logger, iconfiguration)
         {
-            _cache = cache;
             _iconfiguration = iconfiguration;
-            _userLoginDetectService = new UserLoginDetectService(_logger, cache, _iconfiguration);
         }
 
         protected override async Task OnEventActivityAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
@@ -123,21 +121,22 @@ namespace CoreBot.Bots
             var reply = MessageFactory.Attachment(attachments);
             var signinCard = new SigninCard
             {
-                Text = "Login , BotId: "+ botClientUserId,
+                Text = "Login , BotId: " + botClientUserId,
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.Signin, "Sign-in", value: loginUrl) },
             };
             reply.Attachments.Add(signinCard.ToAttachment());
 
-            List<CacheUser> users;
-            if (!_cache.TryGetValue("users", out users))
-            {
-                users = new List<CacheUser>();
-            }
-            if (!users.Any(u => u.BotClientUserId == botClientUserId && u.BotConversationId == botConversationId))
-            {
-                users.Add(new CacheUser(botClientUserId, botConversationId, turnContext, cancellationToken));
-                _cache.Set("users", users, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(7)));
-            }
+            //List<CacheUser> users;
+            //if (!_cache.TryGetValue("users", out users))
+            //{
+            //    users = new List<CacheUser>();
+            //}
+            //if (!users.Any(u => u.BotClientUserId == botClientUserId && u.BotConversationId == botConversationId))
+            //{
+            //    users.Add(new CacheUser(botClientUserId, botConversationId, turnContext, cancellationToken));
+            //    _cache.Set("users", users, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromDays(7)));
+            //}
+
             await turnContext.SendActivityAsync(reply, cancellationToken);
 
             string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
@@ -154,7 +153,7 @@ namespace CoreBot.Bots
             //    server.FlushAllDatabases();
             //}
 
-            StackExchange.Redis.IDatabase db = connection.GetDatabase();
+            IDatabase db = connection.GetDatabase();
 
             SessionModel SessionModel = new SessionModel();
             SessionModel.DisplayName = "";

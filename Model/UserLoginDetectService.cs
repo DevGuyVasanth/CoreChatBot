@@ -1,6 +1,5 @@
 ﻿using Microsoft.Bot.Builder;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -27,16 +26,6 @@ namespace CoreBot.Model
         {
             Logger = logger;
             Cache = cache;
-
-            string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
-            ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
-
-
-            //IDatabase db = connection.GetDatabase();
-            //string userId = "48124";
-            //var val = db.StringGet(userId);
-            //var SessionData = JsonConvert.DeserializeObject(db.StringGet(userId));
-            //SessionDataObj = (SessionModel)SessionData;
         }
 
         public UserLoginDetectService(CancellationToken cancellationToken, IMemoryCache cache, ITurnContext turnContext)
@@ -51,7 +40,7 @@ namespace CoreBot.Model
         {
             //Logger.LogInformation("UserLoginDetectService is starting.");
             Timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(10));
+                TimeSpan.FromSeconds(30));
 
             return Task.CompletedTask;
         }
