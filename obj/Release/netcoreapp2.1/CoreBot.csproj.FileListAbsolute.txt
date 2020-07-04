@@ -37,3 +37,4 @@ E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.RazorTargetAssemblyInfo.
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.dll
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.pdb
 E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.genruntimeconfig.cache
+E:\GitHub\CoreChatBot\obj\Release\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
