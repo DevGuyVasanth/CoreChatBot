@@ -3,12 +3,6 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.9.2
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using CoreBot.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -18,13 +12,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CoreBot.Bots
 {
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        IMemoryCache _cache;
+        new readonly IMemoryCache _cache;
         UserLoginDetectService _userLoginDetectService = null;
         IConfiguration _iconfiguration;
         ILogger<UserLoginDetectService> _logger;
@@ -75,7 +75,7 @@ namespace CoreBot.Bots
             }
         }
 
-        public bool CheckSignin(string botid)
+        public new bool CheckSignin(string botid)
         {
             string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false,allowAdmin=true";
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
