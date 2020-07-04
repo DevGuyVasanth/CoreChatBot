@@ -147,12 +147,12 @@ namespace CoreBot.Bots
             //var server = connection.GetServer(cacheConnectionString);
             //server.FlushDatabase();
 
-            var endpoints = connection.GetEndPoints(true);
-            foreach (var endpoint in endpoints)
-            {
-                var server = connection.GetServer(endpoint);
-                server.FlushAllDatabases();
-            }
+            //var endpoints = connection.GetEndPoints(true);
+            //foreach (var endpoint in endpoints)
+            //{
+            //    var server = connection.GetServer(endpoint);
+            //    server.FlushAllDatabases();
+            //}
 
             StackExchange.Redis.IDatabase db = connection.GetDatabase();
 

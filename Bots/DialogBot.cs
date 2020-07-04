@@ -101,7 +101,7 @@ namespace CoreBot.Bots
 
         public (bool, string, bool) CheckSignin(string botid)
         {
-            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false,allowAdmin=true";
+            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false";
             ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
             IDatabase db = connection.GetDatabase();
@@ -187,12 +187,12 @@ namespace CoreBot.Bots
             //var server = connection.GetServer(cacheConnectionString);
             //server.FlushDatabase();
 
-            var endpoints = connection.GetEndPoints(true);
-            foreach (var endpoint in endpoints)
-            {
-                var server = connection.GetServer(endpoint);
-                server.FlushAllDatabases();
-            }
+            //var endpoints = connection.GetEndPoints(true);
+            //foreach (var endpoint in endpoints)
+            //{
+            //    var server = connection.GetServer(endpoint);
+            //    server.FlushAllDatabases();
+            //}
 
             StackExchange.Redis.IDatabase db = connection.GetDatabase();
 
