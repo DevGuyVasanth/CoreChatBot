@@ -1,0 +1,73 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Choose question in Favorties Category"
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "id": "Qn1",
+      "style": "compact",
+      "isMultiSelect": false,
+      "value": "1",
+      "choices": [
+        {
+          "title": "What is your favorite color?",
+          "value": "What is your favorite color?"
+        },
+        {
+          "title": "What's your favorite sport?",
+          "value": "What's your favorite sport?"
+        },
+        {
+          "title": "What is the title of your favorite book?",
+          "value": "What is the title of your favorite book?"
+        }
+      ]
+    },
+    {
+      "type": "Input.Text",
+      "id": "An1",
+      "placeholder": "Answer"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Choose question in Family Category"
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "id": "Qn2",
+      "style": "compact",
+      "isMultiSelect": false,
+      "value": "1",
+      "choices": [
+        {
+          "title": "What is your oldest sibling’s birthday year? (e.g., 1900)",
+          "value": "What is your oldest sibling’s birthday year? (e.g., 1900)"
+        },
+        {
+          "title": "What is the middle name of your oldest child?",
+          "value": "What is the middle name of your oldest child?"
+        },
+        {
+          "title": "What is your oldest sibling’s birthday month? (e.g., January)",
+          "value": "What is your oldest sibling’s birthday month? (e.g., January)"
+        }
+      ]
+    },
+    {
+      "type": "Input.Text",
+      "id": "An2",
+      "placeholder": "Answer"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "OK"
+    }
+  ]
+}

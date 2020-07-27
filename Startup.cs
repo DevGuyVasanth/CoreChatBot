@@ -46,6 +46,15 @@ namespace CoreBot
 
             services.AddSingleton<LastFiveINCDialog>();
 
+            services.AddSingleton<ArtEnrollmentDialog>();
+
+            services.AddSingleton<ArtRegisterOTPDialog>();
+            //services.AddSingleton<ArtRegisterOTPDialog1>();
+            
+            services.AddSingleton<UserProfileDialog>();
+            services.AddSingleton<ARTEnrollFinalDialog>();
+
+            
 
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();

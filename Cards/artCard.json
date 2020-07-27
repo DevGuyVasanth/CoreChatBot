@@ -1,0 +1,43 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "spacing": "medium",
+      "size": "default",
+      "weight": "bolder",
+      "text": "Please Select anyone of the below option to proceed.",
+      "wrap": true,
+      "maxLines": 0
+    }
+  ],
+  "actions": [
+    //{
+    //  "type": "Action.Submit",
+    //  "title": "ART Enrollment",
+    //  "data": "ART Enrollment"
+    //},
+    {
+      "type": "Action.OpenUrl",
+      "title": "ART Enrollment",
+      "url": "http://192.168.225.144:16011/?botId={botId}&conversationid={conversationid}&request_Type=artEnrollLogin"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Account Unlock",
+      "data": "Account Unlock"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Reset Password",
+      "data": "Reset Password"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Change Password",
+      "data": "Change Password"
+    }
+  ]
+}

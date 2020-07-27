@@ -36,7 +36,12 @@ namespace CoreBot.Dialogs
         {
             if (innerDc.Context.Activity.Type == ActivityTypes.Message)
             {
-                var text = innerDc.Context.Activity.Text.ToLowerInvariant();
+                string text = null;
+                if (innerDc.Context.Activity.Text == null)
+                    text = "";
+                else
+                    text = innerDc.Context.Activity.Text.ToLowerInvariant();
+                //var text = innerDc.Context.Activity.Text.ToLowerInvariant();
 
                 switch (text)
                 {

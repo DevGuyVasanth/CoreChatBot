@@ -1,9 +1,9 @@
-﻿using Microsoft.Bot.Schema;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Bot.Schema;
+using Newtonsoft.Json;
 
 namespace CoreBot
 {
@@ -45,7 +45,7 @@ namespace CoreBot
 
         public static Attachment GenerateAdaptiveCardActionItems(string message)
         {
-            string[] arr = message.Split("-").Where(x=> !string.IsNullOrEmpty(x.Trim())).ToArray();
+            string[] arr = message.Split("-").Where(x => !string.IsNullOrEmpty(x.Trim())).ToArray();
 
             var str_arr = string.Empty;
 

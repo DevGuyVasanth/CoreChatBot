@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using CoreBot.Model;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +16,8 @@ namespace CoreBot.Model
 {
     public class APIRequest
     {
+        private static readonly ILogger Logger;
+
         public string CreateIncident(string desc, string emailid, string json, string url)
         {
             string incidentNumber = string.Empty;
@@ -231,6 +236,216 @@ namespace CoreBot.Model
                 return (false, ex.Message + "~" + snowDetails);
             }
             return (true, response);
+        }
+
+        public static async System.Threading.Tasks.Task<string> GetToken()
+        {
+            string response1 = string.Empty;
+            string BotId = string.Empty;
+            try
+            {
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    Dictionary<string, string> tokenDetails = null;
+
+                    HttpClientHandler restHandler = new HttpClientHandler();
+                    restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                    using (HttpClient rest = new HttpClient(restHandler))
+                    {
+                        rest.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        rest.DefaultRequestHeaders.Add("username", "BotApi");
+                        rest.DefaultRequestHeaders.Add("password", "v$5}8g_90m");
+
+                        var url = "http://192.168.225.144:16200/GetToken";
+                        var dict = new Dictionary<string, string>();
+                        dict.Add("grant_type", "password");
+
+                        using (HttpResponseMessage res = await rest.PostAsync(url, new FormUrlEncodedContent(dict)))
+                        {
+                            res.EnsureSuccessStatusCode();
+
+                            if (res.IsSuccessStatusCode)
+                            {
+                                tokenDetails = JsonConvert.DeserializeObject<Dictionary<string, string>>(res.Content.ReadAsStringAsync().Result);
+                                if (tokenDetails != null && tokenDetails.Any())
+                                {
+                                    var tokenNo = tokenDetails.FirstOrDefault().Value;
+                                    response1 = tokenNo;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return response1;
+        }
+
+        public static async System.Threading.Tasks.Task<bool> ValidateEnrollUser(string json)
+        {
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"null\",\"Activity\":\"\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"null\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "51296").Replace("{sessionId}", "testing");
+            //Logger.LogError("ValidateEnrollUser : " + json + " token :  " + tokenNo);
+
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/ValidateUserID";
+                string tokenResNo = tokenNo.Result.ToString();
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    response = res1.Content.ReadAsStringAsync().Result;
+                    //Logger.LogError("ValidateEnrollUser : " + json + " token :  " + tokenNo + " response : "+ response);
+
+                    if (response.Contains("Invalid Userid"))
+                        return false;
+                    else
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async System.Threading.Tasks.Task<bool> SendOTP(string json)
+        {
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"{Password}\",\"Activity\":\"UserEnrollment\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"{MobileNumber}\",\"IsPrivate\":\"false\",\"IsRegisteredForOTP\":\"false\",\"CountryCode\":\"{CountryCode}\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "48123").Replace("{Password}", "Google@123").Replace("{sessionId}", "testing").Replace("{MobileNumber}", "9791829901").Replace("{CountryCode}", "91");
+            //Logger.LogError("SendOTP : " + json + " token :  " + tokenNo);
+
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/AuthorizeUserAndSendOTP";
+                string tokenResNo = tokenNo.Result.ToString();
+
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    response = res1.Content.ReadAsStringAsync().Result;
+                    ///Logger.LogError("SendOTP : " + json + " token :  " + tokenNo + " response : " + response);
+
+                    if (response.Contains("AuthorizationFailed"))
+                        return false;
+                    else
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async System.Threading.Tasks.Task<bool> ValidateOTP(string json)
+        {
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"{Password}\",\"Activity\":\"UserEnrollment\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"{MobileNumber}\",\"IsPrivate\":\"false\",\"IsRegisteredForOTP\":\"false\",\"CountryCode\":\"{CountryCode}\",\"OTP\":\"{OTP}\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "48123").Replace("{Password}", "Google@123").Replace("{sessionId}", "testing").Replace("{MobileNumber}", "9791829901").Replace("{CountryCode}", "91").Replace("{OTP}", "852753");
+            //Logger.LogError("ValidateOTP : " + json + " token :  " + tokenNo);
+
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/ValidateOTPForRegistration";
+
+                string tokenResNo = tokenNo.Result.ToString();
+
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    response = res1.Content.ReadAsStringAsync().Result;
+                    //Logger.LogError("ValidateOTP : " + json + " token :  " + tokenNo + " response : " + response);
+
+                    if (response.Contains("false"))
+                        return false;
+                    else
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async System.Threading.Tasks.Task<Root> GetAllSecurityQuestions(string json)
+        {
+            Root secQns = new Root();
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"null\",\"NewPassword\":\"null\",\"ConfirmNewPassword\":\"null\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"OTP\":\"null\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "48123").Replace("{sessionId}", "qwqwqqwqw");
+            //Logger.LogError("ValidateOTP : " + json + " token :  " + tokenNo);
+            Dictionary<string, string> tokenDetails = null;
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/GetAllSecurityQuestions";
+
+                string tokenResNo = tokenNo.Result.ToString();
+
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    //response = res1.Content.ReadAsStringAsync().Result;
+                    //Logger.LogError("ValidateOTP : " + json + " token :  " + tokenNo + " response : " + response);
+
+                    secQns = JsonConvert.DeserializeObject<Root>(res1.Content.ReadAsStringAsync().Result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return secQns;
+            }
+
+            return secQns;
         }
     }
 }

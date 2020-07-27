@@ -1,0 +1,42 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Please select the country?"
+    },
+    {
+      "choices": [
+        {
+          "title": "India",
+          "value": "+91"
+        },
+        {
+          "title": "United States",
+          "value": "+1"
+        },
+        {
+          "title": "United Kingdom",
+          "value": "+44"
+        },
+        {
+          "title": "Canada",
+          "value": "+1"
+        }
+      ],
+      "id": "myCountry",
+      "isMultiSelect": false,
+      "style": "compact",
+      "type": "Input.ChoiceSet",
+      "value": "1"
+    }],
+    "actions":
+    [
+      {
+        "type": "Action.Submit",
+        "title": "OK"
+      }
+    ]
+}

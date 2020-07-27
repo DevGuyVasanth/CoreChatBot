@@ -1,0 +1,658 @@
+{
+  "luis_schema_version": "7.0.0",
+  "intents": [
+    {
+      "name": "account_unlock",
+      "features": []
+    },
+    {
+      "name": "Change_Password",
+      "features": []
+    },
+    {
+      "name": "Different_Question",
+      "features": []
+    },
+    {
+      "name": "Employee_Id",
+      "features": []
+    },
+    {
+      "name": "final_step",
+      "features": []
+    },
+    {
+      "name": "greetings",
+      "features": []
+    },
+    {
+      "name": "home",
+      "features": []
+    },
+    {
+      "name": "Knowledge_Base",
+      "features": []
+    },
+    {
+      "name": "Language_Change",
+      "features": []
+    },
+    {
+      "name": "manage_account",
+      "features": []
+    },
+    {
+      "name": "None",
+      "features": []
+    },
+    {
+      "name": "order_something",
+      "features": []
+    },
+    {
+      "name": "Remind_Password_Requirement",
+      "features": []
+    },
+    {
+      "name": "Request_Callback",
+      "features": []
+    },
+    {
+      "name": "Resend_OTP",
+      "features": []
+    },
+    {
+      "name": "Reset_Password",
+      "features": []
+    },
+    {
+      "name": "something_is_broken",
+      "features": []
+    },
+    {
+      "name": "Terminate_employee",
+      "features": []
+    },
+    {
+      "name": "Ticket_Status",
+      "features": []
+    },
+    {
+      "name": "user_enrollment",
+      "features": []
+    }
+  ],
+  "entities": [],
+  "hierarchicals": [],
+  "composites": [],
+  "closedLists": [],
+  "prebuiltEntities": [],
+  "utterances": [
+    {
+      "text": "account management",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "account management - art",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "account management in art",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "account unlock",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "art account management",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "art enrollment",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "bye",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "bye lola",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "call me back",
+      "intent": "Request_Callback",
+      "entities": []
+    },
+    {
+      "text": "can you help me emergency terminate",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "change my language to communicate with bot",
+      "intent": "Language_Change",
+      "entities": []
+    },
+    {
+      "text": "change my network password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "change password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "check knowledge base",
+      "intent": "Knowledge_Base",
+      "entities": []
+    },
+    {
+      "text": "choose change of password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "click home",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "create an incident",
+      "intent": "something_is_broken",
+      "entities": []
+    },
+    {
+      "text": "display main menu",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "do you need me to remind you of the password requirements",
+      "intent": "Remind_Password_Requirement",
+      "entities": []
+    },
+    {
+      "text": "employee emergency termination request",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "employee id",
+      "intent": "Employee_Id",
+      "entities": []
+    },
+    {
+      "text": "enroll me",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "enrollment",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "enrollment for art account",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "exit",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "exit bot",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "fine",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "give me ticket status",
+      "intent": "Ticket_Status",
+      "entities": []
+    },
+    {
+      "text": "go back to the main menu",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hello lola",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "help me change my account password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "help me change my network password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "help me reset my account password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "help me reset my network password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "help to raise an incident",
+      "intent": "something_is_broken",
+      "entities": []
+    },
+    {
+      "text": "hey",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hey lola",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hi lola",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hi lola!!",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "hola",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "home",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "home button",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "how do i reset password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "how do i submit an emergency termination",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "howdy",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "i am unable to login",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "i choose unlock account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "i need to emergency terminate a contingent worker",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "i need to emergency terminate a cw",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "i need to emergency terminate an employee",
+      "intent": "Terminate_employee",
+      "entities": []
+    },
+    {
+      "text": "i want a callback",
+      "intent": "Request_Callback",
+      "entities": []
+    },
+    {
+      "text": "i want a request callback",
+      "intent": "Request_Callback",
+      "entities": []
+    },
+    {
+      "text": "i want to change my language",
+      "intent": "Language_Change",
+      "entities": []
+    },
+    {
+      "text": "i want to change my network password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "i want to change my password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "i want to enroll for art",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "i want to know the status of ticket raised",
+      "intent": "Ticket_Status",
+      "entities": []
+    },
+    {
+      "text": "i want to manage my art account",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "i want to order something",
+      "intent": "order_something",
+      "entities": []
+    },
+    {
+      "text": "i want to reset my password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "i want to try different set of questions",
+      "intent": "Different_Question",
+      "entities": []
+    },
+    {
+      "text": "i want to unlock my account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "i want to use another password instead",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "i would like to change my password",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "is my account locked?",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "language change",
+      "intent": "Language_Change",
+      "entities": []
+    },
+    {
+      "text": "main menu",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "manage account",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "managing account",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "menu option",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "my account is locked",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "my account seems to be locked, please help",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "my password is getting expired",
+      "intent": "Change_Password",
+      "entities": []
+    },
+    {
+      "text": "need a callback",
+      "intent": "Request_Callback",
+      "entities": []
+    },
+    {
+      "text": "no",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "none",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "nope",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "nothing",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "nothing now",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "ok",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "order something",
+      "intent": "order_something",
+      "entities": []
+    },
+    {
+      "text": "please choose unlock account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "please help me unlock my account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "please select unlock account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "requesting a callback",
+      "intent": "Request_Callback",
+      "entities": []
+    },
+    {
+      "text": "resend one time pin code",
+      "intent": "Resend_OTP",
+      "entities": []
+    },
+    {
+      "text": "resend the otp again",
+      "intent": "Resend_OTP",
+      "entities": []
+    },
+    {
+      "text": "reset my network password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "reset password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "reset pasword",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "set my new password",
+      "intent": "Reset_Password",
+      "entities": []
+    },
+    {
+      "text": "show me main menu",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "something is broken",
+      "intent": "something_is_broken",
+      "entities": []
+    },
+    {
+      "text": "something to order",
+      "intent": "order_something",
+      "entities": []
+    },
+    {
+      "text": "something's broken",
+      "intent": "something_is_broken",
+      "entities": []
+    },
+    {
+      "text": "start over",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "sup",
+      "intent": "greetings",
+      "entities": []
+    },
+    {
+      "text": "take me to menu options",
+      "intent": "home",
+      "entities": []
+    },
+    {
+      "text": "thanks",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "thats all",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "thats it",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "that's it lola, thanks",
+      "intent": "final_step",
+      "entities": []
+    },
+    {
+      "text": "try different question",
+      "intent": "Different_Question",
+      "entities": []
+    },
+    {
+      "text": "unable to login to the bot",
+      "intent": "manage_account",
+      "entities": []
+    },
+    {
+      "text": "unlock account",
+      "intent": "account_unlock",
+      "entities": []
+    },
+    {
+      "text": "user art enrollment",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "user enrollment",
+      "intent": "user_enrollment",
+      "entities": []
+    },
+    {
+      "text": "what are the rules for setting password",
+      "intent": "Remind_Password_Requirement",
+      "entities": []
+    },
+    {
+      "text": "yo",
+      "intent": "greetings",
+      "entities": []
+    }
+  ],
+  "versionId": "0.1",
+  "name": "Ricoh-prod",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "phraselists": [],
+  "regex_features": [],
+  "patterns": [],
+  "settings": []
+}

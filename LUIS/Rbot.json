@@ -101,12 +101,22 @@
       "entities": []
     },
     {
+      "text": "facing issues",
+      "intent": "Create Incident",
+      "entities": []
+    },
+    {
       "text": "get details of incidents",
       "intent": "Retrieve Incidents",
       "entities": []
     },
     {
       "text": "get incident details",
+      "intent": "Retrieve Incidents",
+      "entities": []
+    },
+    {
+      "text": "check incident status",
       "intent": "Retrieve Incidents",
       "entities": []
     },
@@ -264,21 +274,21 @@
     {
       "name": "Create Incident",
       "mode": true,
-      "words": "issues,iam having problems,incident,service now incident,not workin,unable to connect,page not repsonding,error message,create incident,runtime error,facing issues in connectivity,connectivity issues,application connectivity,servicenow,snow",
+      "words": "issues,iam having problems,incident,service now incident,not workin,unable to connect,page not repsonding,error message,create incident,runtime error,facing issues in connectivity,connectivity issues,application connectivity,service now,snow",
       "activated": true,
       "enabledForAllModels": false
     },
     {
-      "name": "Get incident details",
+      "name": "Retrieve Incidents",
       "mode": true,
       "words": "incident details,incident number,lastly created incident,details of incident created,snow incidents,service now incident number,snow incident,service now incident,check details,check incident details,check based on incident no,check for incident",
       "activated": true,
       "enabledForAllModels": false
     },
     {
-      "name": "retrive last 5 incident",
+      "name": "Retrieve last 5 incidents",
       "mode": true,
-      "words": "get incident details,servicenow incident details,check incidents,incidents created by me,snow incident details,incident,last incident details,service now incident",
+      "words": "get last 5 incident details,service now incident details,check incidents,incidents created by me,snow incident details,incident,last incident details,service now incident",
       "activated": true,
       "enabledForAllModels": false
     }

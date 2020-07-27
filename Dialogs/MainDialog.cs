@@ -13,9 +13,6 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
-
-using CoreBot.CognitiveModels;
-using CoreBot.Model;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net;
@@ -25,6 +22,12 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
+using CoreBot;
+using AdaptiveCards;
+using CoreBot.Cards;
+using CoreBot.Model;
+using CoreBot.Dialogs;
+using CoreBot.CognitiveModels;
 
 namespace CoreBot.Dialogs
 {
@@ -35,22 +38,31 @@ namespace CoreBot.Dialogs
         IConfiguration _iconfiguration;
         string intentName = string.Empty;
         bool IsinputCheck = false;
-		
+        protected readonly BotState UserState1;
+        //static string AdaptivePromptId = "adaptive";
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ArtEnrollmentDialog artEnrollment, ArtRegisterOTPDialog artRegisterOTP, UserProfileDialog userProfileDialog, ARTEnrollFinalDialog aRTEnrollFinalDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration, UserState userState)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
             _iconfiguration = iconfiguration;
             Logger = logger;
-
+            UserState1 = userState;
+            //AddDialog(new AdaptiveCardPrompt(AdaptivePromptId));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(createIncidentDialog);
             AddDialog(incidentStatusDialog);
             AddDialog(lastFiveINCDialog);
+            AddDialog(artEnrollment);
+            AddDialog(artRegisterOTP);
+            AddDialog(userProfileDialog);
+            AddDialog(aRTEnrollFinalDialog);
+
+
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 InitiateStepAsync,
+                MenuStepAsync,
                 IntroStepAsync,
                 ActStepAsync,
                 FinalStepAsync,
@@ -60,13 +72,39 @@ namespace CoreBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+        private Attachment GenericAdaptiveCard(string message)
+        {
+            var json = @"{'$schema': 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  'type': 'AdaptiveCard',
+                  'version': '1.0',
+                  'body': [{
+                      'type': 'TextBlock',
+                      'spacing': 'medium',
+                      'size': 'default',
+                      'weight': 'bolder',
+                      'text': '" + message + @"',
+                      'wrap': true,
+                      'maxLines': 0
+                    }]
+                    }";
+
+            json = json.Replace("\n", "");
+
+            var adaptiveCardAttachment = new Attachment()
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(json.ToString()),
+            };
+            return adaptiveCardAttachment;
+        }
+
         private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             Incident incidentDetails = new Incident();
 
             if (incidentDetails.IncidentDesc == null)
             {
-                var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Create Incident\"";
+                var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
                 var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
@@ -74,41 +112,145 @@ namespace CoreBot.Dialogs
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> MenuStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            string input = (string)stepContext.Result;
-            intentName = GetLuisJSON(input.ToLower());
-
-            if (!_luisRecognizer.IsConfigured)
+            intentName = (string)stepContext.Result;
+            IsinputCheck = false;
+            if (!string.IsNullOrEmpty(intentName) || intentName.ToUpper() != "NONE")
             {
-                if (string.IsNullOrEmpty(intentName) || intentName == "None")
-                {
-                    //await stepContext.Context.SendActivityAsync(
-                    //    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
-                    Incident inc = new Incident();
-                    var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\incidentCard.json");
-                    JObject json = JObject.Parse(adaptiveCardJson);
-                    var adaptiveCardAttachment = new Attachment()
-                    {
-                        ContentType = "application/vnd.microsoft.card.adaptive",
-                        Content = JsonConvert.DeserializeObject(json.ToString()),
-                    };
-                    if (inc.IncidentDesc == null)
-                    {
-                        return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
-                    }
-                }
-                return await stepContext.NextAsync(null, cancellationToken);
+                intentName = GetLuisJSON(intentName.ToLower());
+                //intentName = (string)stepContext.Result;
+                if (intentName.ToUpper() == "CREATE INCIDENT") // || intentName.ToUpper() != "CHECK INCIDENT STATUS" || intentName.ToUpper() != "RETRIEVE INCIDENTS" || intentName.ToUpper() != "TOP 5 INCIDENTS LIST" || intentName.ToUpper() != "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "CHECK INCIDENT STATUS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "TOP 5 INCIDENTS LIST")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ART ENROLLMENT")
+                    IsinputCheck = true;
             }
 
+            if (!IsinputCheck)
+            {
+                Incident inc = new Incident();
+                var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
+                JObject json = JObject.Parse(adaptiveCardJson);
+                var adaptiveCardAttachment = new Attachment()
+                {
+                    ContentType = "application/vnd.microsoft.card.adaptive",
+                    Content = JsonConvert.DeserializeObject(json.ToString()),
+                };
+                if (inc.IncidentDesc == null)
+                {
+                    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                }
+            }
+
+            return await stepContext.NextAsync(null, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            if (!IsinputCheck)
+            {
+                string card = string.Empty;
+                string input = (string)stepContext.Result;
+                intentName = GetLuisJSON(input.ToLower());
+
+                if (!_luisRecognizer.IsConfigured)
+                {
+                    if (string.IsNullOrEmpty(intentName) || intentName == "None")
+                    {
+                        if (input == "ServiceNow")
+                        {
+                            card = "\\Cards\\incidentCard.json";
+                        }
+                        else if (input == "ART Account Management")
+                        {
+                            card = "\\Cards\\artCard.json";
+                            //string enrollUrl = "http://192.168.225.178:16011/" + "?botId=" + stepContext.Parent.Context.Activity.From.Id.ToString() + "&conversationid=" + stepContext.Parent.Context.Activity.Conversation.Id.ToString() + "&request_Type=artEnrollLogin";
+
+                        }
+                        else if (input == "LiveAgent")
+                        {
+
+                        }
+                        else
+                            intentName = GetLuisJSON(input.ToLower());
+
+                        //AdaptiveCardRenderer renderer = new AdaptiveCardRenderer();
+                        //// For fun, check the schema version this renderer supports
+                        //AdaptiveSchemaVersion schemaVersion = renderer.SupportedSchemaVersion;
+                        //AdaptiveCard card1 = new AdaptiveCard(renderer.SupportedSchemaVersion)
+                        //{
+                        //    Body = { new AdaptiveTextBlock() { Text = "Hello World" } }
+                        //};
+
+                        //try
+                        //{
+                        //    // Render the card
+                        //    RenderedAdaptiveCard renderedCard = renderer.RenderCard(card1);
+                        //    // Get the output HTML 
+                        //    HtmlTag html = renderedCard.Html;
+                        //    // (Optional) Check for any renderer warnings
+                        //    // This includes things like an unknown element type found in the card
+                        //    // Or the card exceeded the maximum number of supported actions, etc
+                        //    IList<AdaptiveWarning> warnings = renderedCard.Warnings;
+                        //}
+                        //catch (AdaptiveException ex)
+                        //{
+                        //    // Failed rendering
+                        //}
+
+                        string botid = (string)stepContext.State["turn.Activity.From.Id"];
+                        string conversationid = (string)stepContext.State["turn.Activity.Conversation.Id"];
+
+                        Incident inc = new Incident();
+                        var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
+                        JObject json = JObject.Parse(adaptiveCardJson.Replace("{botID}", botid).Replace("{conversationid}", conversationid));
+                        adaptiveCardJson = adaptiveCardJson.Replace("{botId}", botid).Replace("{conversationid}", conversationid);
+                        var adaptiveCardAttachment = new Attachment()
+                        {
+                            ContentType = "application/vnd.microsoft.card.adaptive",
+                            Content = JsonConvert.DeserializeObject(adaptiveCardJson.ToString()),
+                        };
+                        if (inc.IncidentDesc == null && !string.IsNullOrWhiteSpace(card))
+                        {
+                            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                        }
+                    }
+                    return await stepContext.NextAsync(null, cancellationToken);
+                }
+            }
+            else
+                return await stepContext.NextAsync(null, cancellationToken);
+
             // Use the text provided in FinalStepAsync or the default if it is the first time.
-            var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\nSay something like \"Create Incident\"";
+            var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ActStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            var val = stepContext.Context.Activity.Value;
+            if (val != null)
+            {
+                if (val.ToString().Contains("Employeeid"))
+                {
+                    var details = JObject.Parse(val.ToString());
+
+                    string EmpID = details["Employeeid"].ToString();
+
+                    ArtOTP otpDetails = new ArtOTP();
+                    otpDetails.EmpID = EmpID;
+                    return await stepContext.BeginDialogAsync(nameof(ArtEnrollmentDialog), otpDetails, cancellationToken);
+                }
+            }
             IsinputCheck = false;
             if (string.IsNullOrEmpty(intentName) || intentName.ToUpper() == "NONE")
             {
@@ -123,10 +265,13 @@ namespace CoreBot.Dialogs
                     IsinputCheck = true;
                 if (intentName.ToUpper() == "RETRIEVE LAST 5 INCIDENTS")
                     IsinputCheck = true;
+                if (intentName.ToUpper() == "ART ENROLLMENT")
+                    IsinputCheck = true;
 
                 if (!IsinputCheck)
                     intentName = GetLuisJSON(intentName.ToLower());
             }
+
             if (!string.IsNullOrWhiteSpace(intentName))
             {
                 if (!_luisRecognizer.IsConfigured)
@@ -139,47 +284,88 @@ namespace CoreBot.Dialogs
                         return await stepContext.BeginDialogAsync(nameof(IncidentStatusDialog), new Incident(), cancellationToken);
                     else if (intentName == "Top 5 Incidents List" || intentName == "Retrieve last 5 incidents")
                         return await stepContext.BeginDialogAsync(nameof(LastFiveINCDialog), new Incident(), cancellationToken);
+                    else if (intentName == "ART Enrollment")
+                    {
+                        //string loginUrl = "http://192.168.225.178:16011/" + "?botId=" + stepContext.Parent.Context.Activity.From.Id.ToString() + "&conversationid=" + stepContext.Parent.Context.Activity.Conversation.Id.ToString() + "&request_Type=artEnrollLogin";
+
+                        //var attachments = new List<Attachment>();
+                        //var reply = MessageFactory.Attachment(attachments);
+                        //var signinCard = new SigninCard
+                        //{
+                        //    Text = "",
+                        //    Buttons = new List<CardAction> { new CardAction(ActionTypes.Signin, "ART Enrollment", value: loginUrl) },
+                        //};
+                        //reply.Attachments.Add(signinCard.ToAttachment());
+
+                        //await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+
+                        ////bool IsLoginEnrolled = await GetEnrollStatus(stepContext, 0);
+                        //var result = Task.Run(async () => await GetEnrollStatus(stepContext, 0)).Result;
+
+                        //if (!result)
+                        //    return await stepContext.EndDialogAsync();
+                        //else
+                        return await stepContext.BeginDialogAsync(nameof(ArtEnrollmentDialog), new ArtOTP(), cancellationToken);
+                    }
                     else
-                        return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
-                    //return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                    {
+                        if (string.IsNullOrEmpty(intentName) || intentName == "None")
+                        {
+                            Incident inc = new Incident();
+                            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
+                            JObject json = JObject.Parse(adaptiveCardJson);
+                            var adaptiveCardAttachment = new Attachment()
+                            {
+                                ContentType = "application/vnd.microsoft.card.adaptive",
+                                Content = JsonConvert.DeserializeObject(json.ToString()),
+                            };
+                            if (inc.IncidentDesc == null)
+                            {
+                                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                            }
+                        }
+                        //return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                    }
 
                 }
             }
-
-            // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
-            var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
-            switch (luisResult.TopIntent().intent)
+            else
             {
-                case FlightBooking.Intent.BookFlight:
-                    await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
 
-                    // Initialize BookingDetails with any entities we may have found in the response.
-                    var bookingDetails = new BookingDetails()
-                    {
-                        // Get destination and origin from the composite entities arrays.
-                        Destination = luisResult.ToEntities.Airport,
-                        Origin = luisResult.FromEntities.Airport,
-                        TravelDate = luisResult.TravelDate,
-                    };
+                // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)
+                var luisResult = await _luisRecognizer.RecognizeAsync<FlightBooking>(stepContext.Context, cancellationToken);
+                switch (luisResult.TopIntent().intent)
+                {
+                    case FlightBooking.Intent.BookFlight:
+                        await ShowWarningForUnsupportedCities(stepContext.Context, luisResult, cancellationToken);
 
-                    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                    return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                        // Initialize BookingDetails with any entities we may have found in the response.
+                        var bookingDetails = new BookingDetails()
+                        {
+                            // Get destination and origin from the composite entities arrays.
+                            Destination = luisResult.ToEntities.Airport,
+                            Origin = luisResult.FromEntities.Airport,
+                            TravelDate = luisResult.TravelDate,
+                        };
 
-                case FlightBooking.Intent.GetWeather:
-                    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-                    var getWeatherMessageText = "TODO: get weather flow here";
-                    var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
-                    break;
+                        // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
+                        return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
 
-                default:
-                    // Catch all for unhandled intents
-                    var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
-                    var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
-                    await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
-                    break;
+                    case FlightBooking.Intent.GetWeather:
+                        // We haven't implemented the GetWeatherDialog so we just display a TODO message.
+                        var getWeatherMessageText = "TODO: get weather flow here";
+                        var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
+                        await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
+                        break;
+
+                    default:
+                        // Catch all for unhandled intents
+                        var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was {luisResult.TopIntent().intent})";
+                        var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+                        await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
+                        break;
+                }
             }
-
             return await stepContext.NextAsync(null, cancellationToken);
         }
 
@@ -233,6 +419,18 @@ namespace CoreBot.Dialogs
                 {
                     string json = _iconfiguration.GetValue<string>("IncidentCreateJson");
                     json = json.Replace("{shortdesc}", result.IncidentDesc).Replace("{desc}", result.IncidentDesc);
+                    if (!string.IsNullOrEmpty(result.EmailID))
+                    {
+                        if (result.EmailID.ToLower() == "siva@naseramuk.onmicrosoft.com")
+                            json = json.Replace("{caller_id}", "Sivasubramanian");
+                        else if (result.EmailID.ToLower() == "veera@naseramuk.onmicrosoft.com")
+                            json = json.Replace("{caller_id}", "veera");
+                        else
+                            json = json.Replace("{caller_id}", "int_user");
+                    }
+                    else
+                        json = json.Replace("{caller_id}", "int_user");
+
                     string url = _iconfiguration.GetValue<string>("IncidentCreateURL");
                     string incident_number = apicall.CreateIncident(result.IncidentDesc, result.EmailID, json, url);
                     // string incident_number = "INC123456789";
@@ -271,21 +469,102 @@ namespace CoreBot.Dialogs
             return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
 
+
+        //private async Task<bool> GetEnrollStatus(WaterfallStepContext stepContext, int retry)
+        //{
+        //    var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
+        //    var sessionModels = await sessionModelsAccessors.GetAsync(stepContext.Parent.Context, () => new SessionModel());
+
+        //    bool IsLoginEnrolled = sessionModels.IsLoginEnrolled;
+
+        //    if (!IsLoginEnrolled && retry <= 100)
+        //    {
+        //        retry++;
+        //        await GetEnrollStatus(stepContext, retry);
+        //    }
+
+        //    return IsLoginEnrolled;
+        //}
+
+        //public async Task<bool> GetEnrollStatus(WaterfallStepContext stepContext, int retry)
+        //{
+        //    while (true)
+        //    {
+        //        var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
+        //        var sessionModels = await sessionModelsAccessors.GetAsync(stepContext.Parent.Context, () => new SessionModel());
+        //        bool IsLoginEnrolled = sessionModels.IsLoginEnrolled;
+        //        //var stream = GetStream(streamPosition);
+
+        //        if (IsLoginEnrolled)
+        //            return IsLoginEnrolled;
+        //        else
+        //            await GetEnrollStatus(stepContext, retry);
+
+        //        await Task.Yield();
+        //    }
+        //}
+
+        private string GetLuisJSON1(string input)
+        {
+            string intentName = string.Empty;
+            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\LUIS\\Ricoh-prod.json");
+
+            try
+            {
+                JObject json = JObject.Parse(adaptiveCardJson);
+                JObject match = json["utterances"].Values<JObject>().Where(m => m["text"].Value<string>() == input).FirstOrDefault();
+
+                if (match != null)
+                    intentName = match["intent"].ToString();
+                else
+                    intentName = "None";
+
+                if (intentName == "None")
+                {
+                    JObject match1 = json["phraselists"].Values<JObject>().Where(m => m["words"].Value<string>().Contains(input)).FirstOrDefault();
+                    if (match1 != null)
+                        intentName = match1["name"].ToString();
+                    else
+                        intentName = "None";
+                }
+            }
+            catch
+            {
+                intentName = "None";
+            }
+            return intentName;
+        }
+
         private string GetLuisJSON(string input)
         {
             string intentName = string.Empty;
             var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\LUIS\\Rbot.json");
-            JObject json = JObject.Parse(adaptiveCardJson);
-            JObject match = json["utterances"].Values<JObject>().Where(m => m["text"].Value<string>() == input).FirstOrDefault();
 
-            if (match != null)
-                intentName = match["intent"].ToString();
-            else
+            try
+            {
+                JObject json = JObject.Parse(adaptiveCardJson);
+                JObject match = json["utterances"].Values<JObject>().Where(m => m["text"].Value<string>() == input).FirstOrDefault();
+
+                if (match != null)
+                    intentName = match["intent"].ToString();
+                else
+                    intentName = "None";
+
+                if (intentName == "None")
+                {
+                    JObject match1 = json["phraselists"].Values<JObject>().Where(m => m["words"].Value<string>().Contains(input)).FirstOrDefault();
+                    if (match1 != null)
+                        intentName = match1["name"].ToString();
+                    else
+                        intentName = "None";
+                }
+            }
+            catch
+            {
                 intentName = "None";
-
+            }
             return intentName;
         }
-
         //private string CreateIncident(string desc, string emailid, string json, string url)
         //{
 
@@ -526,5 +805,4 @@ namespace CoreBot.Dialogs
         //}
 
     }
-
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
+using CoreBot;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 
 namespace CoreBot.Dialogs
@@ -54,6 +55,8 @@ namespace CoreBot.Dialogs
             }
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
+
+
         private async Task<DialogTurnResult> EmailIDStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var incidentDetails = (Incident)stepContext.Options;

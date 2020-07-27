@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
+using CoreBot;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 
 namespace CoreBot.Dialogs
@@ -37,6 +38,7 @@ namespace CoreBot.Dialogs
             // The initial child Dialog to run.
             InitialDialogId = nameof(WaterfallDialog);
         }
+
         private async Task<DialogTurnResult> InitConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             string messageText = string.Empty;
@@ -52,6 +54,7 @@ namespace CoreBot.Dialogs
             }
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
+
 
         private async Task<DialogTurnResult> EmailIDStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {

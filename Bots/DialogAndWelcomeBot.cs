@@ -1,8 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-//
-// Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.9.2
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CoreBot.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
@@ -12,27 +16,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Session;
 
 namespace CoreBot.Bots
 {
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        new readonly IMemoryCache _cache;
+        IMemoryCache _cache;
         UserLoginDetectService _userLoginDetectService = null;
         IConfiguration _iconfiguration;
         ILogger<UserLoginDetectService> _logger;
+        protected readonly BotState UserState1;
 
         public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, IConfiguration iconfiguration)
             : base(conversationState, userState, dialog, logger, iconfiguration)
         {
             _iconfiguration = iconfiguration;
+            UserState1 = userState;
         }
 
         protected override async Task OnEventActivityAsync(ITurnContext<IEventActivity> turnContext, CancellationToken cancellationToken)
@@ -49,53 +50,101 @@ namespace CoreBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            //foreach (var member in membersAdded)
-            //{
-            //    // Greet anyone that was not the target (recipient) of this message.
-            //    // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
-            //    if (member.Id != turnContext.Activity.Recipient.Id)
-            //    {
-            //        var welcomeCard = CreateAdaptiveCardAttachment();
-            //        var response = MessageFactory.Attachment(welcomeCard);
-            //        await turnContext.SendActivityAsync(response, cancellationToken);
-            //        await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
-            //    }
-            //}
-            if (turnContext.Activity.ChannelId != "directline" && turnContext.Activity.ChannelId != "webchat")
+            foreach (var member in membersAdded)
             {
-                foreach (var member in membersAdded)
+                // Greet anyone that was not the target (recipient) of this message.
+                // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
+                if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    if (member.Id != turnContext.Activity.Recipient.Id)
+                    var welcomeCard = CreateAdaptiveCardAttachment();
+                    var response = MessageFactory.Attachment(welcomeCard);
+                    await turnContext.SendActivityAsync(response, cancellationToken);
+                    await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+
+                    string botClientUserId = turnContext.Activity.From.Id;
+                    string botConversationId = turnContext.Activity.Conversation.Id;
+                    string botchannelID = turnContext.Activity.ChannelId;
+
+                    string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
+
+                    try
                     {
-                        bool stat = CheckSignin(turnContext.Activity.From.Id);
-                        if (!stat)
-                            await ShowSigninCard(turnContext, cancellationToken);
+                        ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
+
+                        StackExchange.Redis.IDatabase db = connection.GetDatabase();
+
+                        SessionModel SessionModel = new SessionModel();
+                        SessionModel.DisplayName = "";
+                        SessionModel.EmailId = "";
+                        SessionModel.SessionKey = botClientUserId;
+                        SessionModel.ConversationID = botConversationId;
+                        SessionModel.IsSkipIntro = false;
+                        SessionModel.UserLoginDetectServiceChk = 0;
+
+                        db.StringSet(botClientUserId, JsonConvert.SerializeObject(SessionModel));
+                        db.StringSet(botClientUserId + "artEnroll", JsonConvert.SerializeObject(SessionModel));
+
+                        var sessionModelsAccessors = UserState.CreateProperty<SessionModel>(nameof(SessionModel));
+                        var sessionModels = await sessionModelsAccessors.GetAsync(turnContext, () => new SessionModel());
+                        if (string.IsNullOrWhiteSpace(sessionModels.DisplayName) && sessionModels.UserLoginDetectServiceChk == 0)
+                        {
+                            sessionModels.Password = "";
+                            sessionModels.DisplayName = "";
+                            sessionModels.EmailId = "";
+                            sessionModels.SessionKey = botClientUserId;
+                            sessionModels.ConversationID = botConversationId;
+                            sessionModels.IsSkipIntro = false;
+                            UserLoginDetectService userLoginDetect = new UserLoginDetectService(cancellationToken, _cache, turnContext, cacheConnectionString, UserState);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
                     }
                 }
             }
+            //if (turnContext.Activity.ChannelId != "directline" && turnContext.Activity.ChannelId != "webchat")
+            //{
+            //    foreach (var member in membersAdded)
+            //    {
+            //        if (member.Id != turnContext.Activity.Recipient.Id)
+            //        {
+            //            bool stat = CheckSignin(turnContext.Activity.From.Id);
+            //            if (!stat)
+            //                await ShowSigninCard(turnContext, cancellationToken);
+            //        }
+            //    }
+            //}
         }
 
-        public new bool CheckSignin(string botid)
+        public bool CheckSignin(string botid)
         {
-            string cacheConnectionString = "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false,allowAdmin=true";
-            ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
-
-            IDatabase db = connection.GetDatabase();
-            var val = db.StringGet(botid);
-
-            if (!val.IsNullOrEmpty)
+            string cacheConnectionString = _iconfiguration["RedisCacheConnection"]; // "HexaChatBotRedis.redis.cache.windows.net:6380,password=gItUtui8ogouVxo48BUEozsSnMg4JeHkgg2RX7TmPH8=,ssl=True,abortConnect=false,allowAdmin=true";
+            try
             {
-                var SessionData = JsonConvert.DeserializeObject(db.StringGet(botid));
+                ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
-                dynamic blogObject = JsonConvert.DeserializeObject<dynamic>(db.StringGet(botid));
-                string name = blogObject["DisplayName"];
-                string description = blogObject["EmailId"];
-                string description1 = blogObject["SessionKey"];
+                IDatabase db = connection.GetDatabase();
+                var val = db.StringGet(botid);
 
-                if (!string.IsNullOrEmpty(name))
+                if (!val.IsNullOrEmpty)
                 {
-                    return true;
+                    var SessionData = JsonConvert.DeserializeObject(db.StringGet(botid));
+
+                    dynamic blogObject = JsonConvert.DeserializeObject<dynamic>(db.StringGet(botid));
+                    string name = blogObject["DisplayName"];
+                    string description = blogObject["EmailId"];
+                    string description1 = blogObject["SessionKey"];
+
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        return true;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
             return false;
         }
@@ -115,13 +164,24 @@ namespace CoreBot.Bots
 
             //string loginUrl = "https://localhost:44332/home/LoginWithAzure?channelId={" + botchannelID + "}&userId={" + botClientUserId + "}";
 
-            string loginUrl = _iconfiguration["RedirectURL"] + "?botId=" + botClientUserId + "&conversationid=" + botConversationId + "";
+            string loginUrl = _iconfiguration["RedirectURL"] + "?botId=" + botClientUserId + "&conversationid=" + botConversationId + "&request_Type=artMainLogin";
+
+            //var userStateAccessors = UserState1.CreateProperty<UserProfile>(nameof(UserProfile));
+            //var userProfile = await userStateAccessors.GetAsync(turnContext, () => new UserProfile());
+            //if (string.IsNullOrEmpty(userProfile.Name))
+            //{
+            //    // Set the name to what the user provided.  
+            //    userProfile.Name = turnContext.Activity.Text?.Trim();
+            //    userProfile.botID = turnContext.Activity.From.Id;
+            //    // Acknowledge that we got their name.  
+            //    //await turnContext.SendActivityAsync($"Thanks {userProfile.Name}. To see conversation data, type anything.");
+            //}
 
             var attachments = new List<Attachment>();
             var reply = MessageFactory.Attachment(attachments);
             var signinCard = new SigninCard
             {
-                Text = "Login , BotId: " + botClientUserId,
+                Text = "Please Sign In",
                 Buttons = new List<CardAction> { new CardAction(ActionTypes.Signin, "Sign-in", value: loginUrl) },
             };
             reply.Attachments.Add(signinCard.ToAttachment());
@@ -140,38 +200,46 @@ namespace CoreBot.Bots
             await turnContext.SendActivityAsync(reply, cancellationToken);
 
             string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
-            ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
+            try
+            {
+                ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
 
-            //ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost,allowAdmin=true");
-            //var server = connection.GetServer(cacheConnectionString);
-            //server.FlushDatabase();
+                IDatabase db = connection.GetDatabase();
 
-            //var endpoints = connection.GetEndPoints(true);
-            //foreach (var endpoint in endpoints)
-            //{
-            //    var server = connection.GetServer(endpoint);
-            //    server.FlushAllDatabases();
-            //}
+                SessionModel SessionModel = new SessionModel();
+                SessionModel.DisplayName = "";
+                SessionModel.EmailId = "";
+                SessionModel.SessionKey = botClientUserId;
+                SessionModel.ConversationID = botConversationId;
+                SessionModel.IsSkipIntro = false;
 
-            IDatabase db = connection.GetDatabase();
+                db.StringSet(botClientUserId, JsonConvert.SerializeObject(SessionModel));
+                db.StringSet(botClientUserId + "artEnroll", JsonConvert.SerializeObject(SessionModel));
+            }
+            catch (Exception ex)
+            {
 
-            SessionModel SessionModel = new SessionModel();
-            SessionModel.DisplayName = "";
-            SessionModel.EmailId = "";
-            SessionModel.SessionKey = botClientUserId;
-            SessionModel.ConversationID = botConversationId;
-            SessionModel.IsSkipIntro = false;
+            }
 
-            db.StringSet(botClientUserId, JsonConvert.SerializeObject(SessionModel));
+            var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
+            var sessionModels = await sessionModelsAccessors.GetAsync(turnContext, () => new SessionModel());
+            if (string.IsNullOrWhiteSpace(sessionModels.DisplayName))
+            {
+                sessionModels.Password = "";
+                sessionModels.DisplayName = "";
+                sessionModels.EmailId = "";
+                sessionModels.SessionKey = botClientUserId;
+                sessionModels.ConversationID = botConversationId;
+                sessionModels.IsSkipIntro = false;
+            }
 
-            UserLoginDetectService userLoginDetect = new UserLoginDetectService(cancellationToken, _cache, turnContext);
-
+            UserLoginDetectService userLoginDetect = new UserLoginDetectService(cancellationToken, _cache, turnContext, cacheConnectionString, UserState1);
         }
 
         // Load attachment from embedded resource.
         private Attachment CreateAdaptiveCardAttachment()
         {
-            var cardResourcePath = GetType().Assembly.GetManifestResourceNames().First(name => name.EndsWith("welcomeCard.json"));
+            var cardResourcePath = "CoreBot.Cards.welcomeCard.json";
 
             using (var stream = GetType().Assembly.GetManifestResourceStream(cardResourcePath))
             {

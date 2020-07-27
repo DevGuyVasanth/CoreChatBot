@@ -4,13 +4,9 @@
 // Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.9.2
 
 using System.Threading.Tasks;
-using CoreBot.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using StackExchange.Redis;
 
 namespace CoreBot.Controllers
 {
@@ -23,17 +19,11 @@ namespace CoreBot.Controllers
     {
         private readonly IBotFrameworkHttpAdapter Adapter;
         private readonly IBot Bot;
-        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot, IConfiguration _iconfiguration)
+
+        public BotController(IBotFrameworkHttpAdapter adapter, IBot bot)
         {
             Adapter = adapter;
             Bot = bot;
-            //string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
-            //ConnectionMultiplexer connection = ConnectionMultiplexer.Connect(cacheConnectionString);
-
-            //IDatabase db = connection.GetDatabase();
-            //string userId = "48124"; //"RAMUKLAP";//"48123";
-            //var val = db.StringGet(userId);
-            //var SessionData = JsonConvert.DeserializeObject(db.StringGet(userId));
         }
 
         [HttpPost, HttpGet]

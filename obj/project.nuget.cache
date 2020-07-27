@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nyV8SLKdWE9owOpHh8vbpWa7IcjUPkfT1t22HRywv7DPL7VhYkYeMbYmfEFMDgq0qRelAjBpqo9somUiPY4vOw==",
+  "dgSpecHash": "gB+CuP4nEdeiO85ZY/XpJ9dg0GlRMEb8AbZ+7JvBarq0l3sjU8lP4N9qJuGqgHpxIQHaQvRBojJRXrLOJLvE+Q==",
   "success": true,
-  "projectFilePath": "E:\\GitHub\\CoreChatBot\\CoreBot.csproj",
+  "projectFilePath": "E:\\GitHub\\CoreChatBot_27_July_2020\\CoreBot.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Ramuk\\.nuget\\packages\\adaptivecards\\1.2.4\\adaptivecards.1.2.4.nupkg.sha512",
     "C:\\Users\\Ramuk\\.nuget\\packages\\adaptiveexpressions\\4.9.2\\adaptiveexpressions.4.9.2.nupkg.sha512",

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using Microsoft.AspNetCore.Mvc;
+using CoreBot;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 
 namespace CoreBot.Dialogs
@@ -61,6 +62,7 @@ namespace CoreBot.Dialogs
             }
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
+
         private async Task<DialogTurnResult> IncidentDescStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var incidentDetails = (Incident)stepContext.Options;
@@ -86,7 +88,7 @@ namespace CoreBot.Dialogs
             else
                 return await stepContext.EndDialogAsync(null, cancellationToken);
 
-                return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
 
 

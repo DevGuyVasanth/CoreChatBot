@@ -1,0 +1,28 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "It seems you are having trouble locating your employee ID number.  Do you want to speak with a live agent or come back and register once you have located your employee ID number?",
+      "wrap": true
+    }
+  ],
+  "actions": [
+
+    {
+      "type": "Action.Submit",
+      "title": "Chat with a Live Agent",
+      "data": "Chat with a live agent"
+
+    },
+    {
+      "type": "Action.Submit",
+      "title": "I'll come back later",
+      "data": "I'll come back later"
+
+    }
+
+  ]
+}
