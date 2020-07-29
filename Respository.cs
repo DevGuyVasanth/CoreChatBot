@@ -81,5 +81,37 @@ namespace CoreBot
             };
             return adaptiveCardAttachment;
         }
+
+        public static Attachment GenerateAdaptiveCardTextBlock1(string message)
+        {
+           // string[] arr = message.Split("-");
+
+            var str_arr = string.Empty;
+
+
+                str_arr += @"{
+                      'type': 'TextBlock',
+                      'spacing': 'medium',
+                      'size': 'default',
+                      'weight': 'bolder',
+                      'text': '" + message + @"',
+                      'wrap': true,
+                      'maxLines': 0
+                    },";
+
+
+            var json = @"{'$schema': 'http://adaptivecards.io/schemas/adaptive-card.json',
+                  'type': 'AdaptiveCard',
+                  'version': '1.0',
+                  'body': [" + str_arr + @"]}";
+
+
+            var adaptiveCardAttachment = new Attachment()
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(json.ToString()),
+            };
+            return adaptiveCardAttachment;
+        }
     }
 }

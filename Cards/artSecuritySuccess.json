@@ -5,7 +5,7 @@
   "body": [
     {
       "type": "TextBlock",
-      "text": "Would you like to register to use a one-time pin code sent to your mobile device for future unlocks and password resets?",
+      "text": "Is there anything else I can help you with?",
       "wrap": true
     }
   ],
@@ -13,14 +13,14 @@
 
     {
       "type": "Action.Submit",
-      "title": "Register for One-Time Pin",
-      "data": "Register for One-Time Pin"
+      "title": "Home",
+      "data": "Home"
 
     },
     {
       "type": "Action.Submit",
-      "title": "No Thanks",
-      "data": "No Thanks"
+      "title": "ART Account Management",
+      "data": "ART Account Management"
 
     }
 

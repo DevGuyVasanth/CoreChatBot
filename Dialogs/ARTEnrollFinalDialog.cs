@@ -2,6 +2,7 @@
 using CoreBot.Model;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -32,16 +33,18 @@ namespace CoreBot.Dialogs
         static string Password = string.Empty;
         static string UserId = string.Empty;
         private static readonly ILogger Logger;
-
+        static string defaultCountryCode = "+1";
 
         public ARTEnrollFinalDialog(UserState userState)
             : base(nameof(ARTEnrollFinalDialog))
         {
             _userProfileAccessor = userState.CreateProperty<ArtOTP>("ArtOTP");
 
+
             // This array defines how the Waterfall will execute.
             var waterfallSteps = new WaterfallStep[]
             {
+                ConfirmStepAsync,
                 SelectCountryCodeStepAsync,
                 GetCountryCodeStepAsync,
                 VerifyMobNumberAndSendOtpStepAsync,
@@ -49,6 +52,7 @@ namespace CoreBot.Dialogs
                 OTPSucessStepAsync,
                 SelectSecurityQn1StepAsync,
                 SelectSecurityAn1StepAsync,
+                SuccessStepAsync,
             };
 
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
@@ -65,11 +69,33 @@ namespace CoreBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
+
+        private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            string messageText = string.Empty;
+
+            messageText = $"Are you in the US or Canada?";
+
+            //var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+            return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock(messageText)), Style = ListStyle.HeroCard }, cancellationToken);
+
+            //var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+            //return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+        }
+
         private static async Task<DialogTurnResult> SelectCountryCodeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            var otpDetails = (ArtOTP)stepContext.Options;
+            if ((bool)stepContext.Result)
+            {
+                otpDetails.CountryCode = defaultCountryCode;
+                return await stepContext.NextAsync(otpDetails.CountryCode, cancellationToken);
+            }
+
+
             string card = "\\Cards\\artCountryDrpDown.json";
             //ArtOTP otpDetails = new ArtOTP();
-            var otpDetails = (ArtOTP)stepContext.Options;
+
             otpDetails.IsValidMobile = false;
             otpDetails.IsValidOTP = false;
 
@@ -95,14 +121,22 @@ namespace CoreBot.Dialogs
         private static async Task<DialogTurnResult> GetCountryCodeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var empDet = stepContext.Result.ToString();
+            var otpDetails = (ArtOTP)stepContext.Options;
+            if (empDet.ToString() == "+1")
+            {
+                otpDetails.CountryCode = defaultCountryCode;
+                Password = otpDetails.Password;
+                UserId = otpDetails.EmpID;
+                return await stepContext.NextAsync(otpDetails.CountryCode, cancellationToken);
+            }
             var details = JObject.Parse(empDet);
             //ArtOTP otpDetails = new ArtOTP();
-            var otpDetails = (ArtOTP)stepContext.Options;
+
 
             string text = "Selected " + details["myCountry"].ToString() + " Country code";
             otpDetails.CountryCode = details["myCountry"].ToString().Replace("+", "");
 
-            
+
             CountryCode = details["myCountry"].ToString().Replace("+", "");
             Password = otpDetails.Password;
             UserId = otpDetails.EmpID;
@@ -134,7 +168,7 @@ namespace CoreBot.Dialogs
                 var promptOptions = new PromptOptions
                 {
                     Prompt = MessageFactory.Text("Great, now enter your mobile number."),
-                    RetryPrompt = MessageFactory.Text("Please enter valid mobile number."),
+                    RetryPrompt = MessageFactory.Text("That isn't a valid number, make sure you only enter numbers."),
                 };
 
                 return await stepContext.PromptAsync(nameof(NumberPrompt<int>), promptOptions, cancellationToken);
@@ -150,6 +184,7 @@ namespace CoreBot.Dialogs
         {
             if (MobNoAttemptCount == 3 && !IsValidMobNumber)
             {
+                MobNoAttemptCount = 0;
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text("Please try again later."), cancellationToken);
                 return await stepContext.EndDialogAsync();
             }
@@ -170,7 +205,7 @@ namespace CoreBot.Dialogs
                 var promptOptions = new PromptOptions
                 {
                     Prompt = MessageFactory.Text("Your mobile device shoud get a text message in a minute with a pin number. Please enter it below."),
-                    RetryPrompt = MessageFactory.Text("Please enter valid otp."),
+                    RetryPrompt = MessageFactory.Text("That's not the code, try again"),
                 };
 
                 return await stepContext.PromptAsync(DlgOTPId, promptOptions, cancellationToken);
@@ -186,8 +221,18 @@ namespace CoreBot.Dialogs
         {
             if (OTPAttemptCount == 3 && !IsValidOTPNumber)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text("Please try again later."), cancellationToken);
-                return await stepContext.EndDialogAsync();
+                OTPAttemptCount = 0;
+                string card = "\\Cards\\artEnrollLoginFailure.json";
+                var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
+                var adaptiveCardAttachment = new Attachment()
+                {
+                    ContentType = "application/vnd.microsoft.card.adaptive",
+                    Content = JsonConvert.DeserializeObject(adaptiveCardJson.ToString()),
+                };
+                if (!string.IsNullOrWhiteSpace(card))
+                {
+                    return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+                }
             }
 
             var otpDetails = (ArtOTP)stepContext.Options;
@@ -242,8 +287,20 @@ namespace CoreBot.Dialogs
 
         private async Task<DialogTurnResult> SelectSecurityQn1StepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            string card = "\\Cards\\artSecQn1.json";
             var otpDetails = (ArtOTP)stepContext.Options;
+
+            string Option = stepContext.Result.ToString();
+
+            if (Option == "Main Menu")
+            {
+                return await stepContext.EndDialogAsync("MainMenu", cancellationToken);
+            }
+            else if (Option == "Chat with a live agent")
+            {
+                return await stepContext.EndDialogAsync("Chat with a live agent", cancellationToken);
+            }
+
+            string card = "\\Cards\\artSecQn1.json";
             //otpDetails.IsValidMobile = false;
 
             //otpDetails.IsValidOTP = false;
@@ -339,7 +396,40 @@ namespace CoreBot.Dialogs
             //};
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text("Congratulation! You are now enrolled in ART and can use the tool to unlock your account, reset your password or change your password."), cancellationToken);
-            return await stepContext.EndDialogAsync();
+
+            string card = "\\Cards\\artSecuritySuccess.json";
+            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
+            //JObject json = JObject.Parse(adaptiveCardJson.Replace("{botID}", botid));
+            var adaptiveCardAttachment = new Attachment()
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(adaptiveCardJson.ToString()),
+            };
+            if (!string.IsNullOrWhiteSpace(card))
+            {
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+            }
+            else
+                return await stepContext.EndDialogAsync();
+        }
+
+
+        private async Task<DialogTurnResult> SuccessStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var otpDetails = (ArtOTP)stepContext.Options;
+
+            string choice = (string)stepContext.Result;
+
+            if (choice == "Home")
+            {
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+            else if (choice == "ART Account Management")
+            {
+                return await stepContext.BeginDialogAsync(nameof(ARTEnrollFinalDialog), otpDetails, cancellationToken);
+            }
+            else
+                return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
         private static async Task<bool> MobileNumberValidation(PromptValidatorContext<int> promptContext, CancellationToken cancellationToken)
@@ -351,13 +441,13 @@ namespace CoreBot.Dialogs
             //{
             //    promptContext.Recognized.Value = Convert.ToInt32(mobno);
             //}
-
             var turnState = promptContext.Context.TurnState.Values.ElementAt(6).ToString();
             var turnStateDetails = JObject.Parse(turnState);
             string botUseriD = turnStateDetails.SelectToken("activity.from.id").ToString();
 
-            bool IsValidMob = true;// await VaidateMobileNumber(mobno, botUseriD);
+            bool IsValidMob = await VaidateMobileNumber(mobno, botUseriD);
             // This condition is our validation rule. You can also change the value at this point.
+
 
             if (!IsValidMob && promptContext.AttemptCount == 3)
             {
@@ -376,14 +466,22 @@ namespace CoreBot.Dialogs
         {
             string otpno = promptContext.Context.Activity.Text.ToString();
             string otpno1 = promptContext.Recognized.Value.ToString();
+            string retryMsg = promptContext.Options.RetryPrompt.Text;
 
             var turnState = promptContext.Context.TurnState.Values.ElementAt(6).ToString();
             var turnStateDetails = JObject.Parse(turnState);
             string botUseriD = turnStateDetails.SelectToken("activity.from.id").ToString();
 
-            bool IsValidOTP = true;// await VaidateOTPNumber(otpno, botUseriD);
-
-            if (!IsValidOTP && promptContext.AttemptCount == 3)
+            bool IsValidOTP = await VaidateOTPNumber(otpno, botUseriD);
+            if (!IsValidOTP && promptContext.AttemptCount == 1)
+            {
+                //promptContext.Options.RetryPrompt.Text = "That's still not right, try one more time to enter the pin code that was sent to your mobile device.";
+            }
+            else if (!IsValidOTP && promptContext.AttemptCount == 2)
+            {
+                promptContext.Options.RetryPrompt.Text = "That's still not right, try one more time to enter the pin code that was sent to your mobile device.";
+            }
+            else if (!IsValidOTP && promptContext.AttemptCount == 3)
             {
                 OTPAttemptCount = promptContext.AttemptCount;
                 IsValidOTPNumber = IsValidOTP;
@@ -395,7 +493,7 @@ namespace CoreBot.Dialogs
             return await Task.FromResult(promptContext.Recognized.Succeeded && IsValidOTP);
         }
 
-        private static async Task<bool> VaidateMobileNumber(string mobileNumber,string botUserId)
+        private static async Task<bool> VaidateMobileNumber(string mobileNumber, string botUserId)
         {
             string mobNo = mobileNumber.Trim();
             bool IsMobValid = false;
@@ -409,20 +507,20 @@ namespace CoreBot.Dialogs
             //Logger.LogError("before Validation -VaidateMobileNumber : " + json + " IsOTPValid : " + IsMobValid.ToString());
 
             if (IsMobValid)
-                IsMobValid = true; // await APIRequest.SendOTP(json);
-           // Logger.LogError("after Validation - VaidateMobileNumber : " + json + " IsOTPValid : " + IsMobValid.ToString());
+                IsMobValid = await APIRequest.SendOTP(json);
+            // Logger.LogError("after Validation - VaidateMobileNumber : " + json + " IsOTPValid : " + IsMobValid.ToString());
 
             return IsMobValid;
         }
 
-        private static async Task<bool> VaidateOTPNumber(string otpNo,string botUserID)
+        private static async Task<bool> VaidateOTPNumber(string otpNo, string botUserID)
         {
             string otp = otpNo.Trim();
             bool IsOTPValid = false;
 
             string MatchPhoneNumberPattern = "^[0-9]{6}$";
             if (otp != null)
-                IsOTPValid= Regex.IsMatch(otp, MatchPhoneNumberPattern);
+                IsOTPValid = Regex.IsMatch(otp, MatchPhoneNumberPattern);
 
             string json = "{\"UserID\":\"{UserID}\",\"Password\":\"{Password}\",\"Activity\":\"UserEnrollment\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"{MobileNumber}\",\"IsPrivate\":\"false\",\"IsRegisteredForOTP\":\"true\",\"CountryCode\":\"{CountryCode}\",\"OTP\":\"{OTP}\",\"QuestionAnswerModelList\":\"null\"}";
             json = json.Replace("{UserID}", UserId).Replace("{Password}", Password).Replace("{sessionId}", botUserID).Replace("{MobileNumber}", MobileNumber).Replace("{CountryCode}", CountryCode).Replace("{OTP}", otpNo);

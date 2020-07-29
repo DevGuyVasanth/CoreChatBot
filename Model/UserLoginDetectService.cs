@@ -47,7 +47,7 @@ namespace CoreBot.Model
         {
             //Logger.LogInformation("UserLoginDetectService is starting.");
             Timer = new Timer(DoWork, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(2));
+                TimeSpan.FromSeconds(5));
 
             return Task.CompletedTask;
         }
@@ -153,6 +153,7 @@ namespace CoreBot.Model
                     artEnrollSessionModel.LastName = LastName;
                     artEnrollSessionModel.IsSkipIntro = IsSkipIntro;
                     artEnrollSessionModel.ARTEnrollLoginStatus = ARTEnrollLoginStatus;
+                    artEnrollSessionModel.Password = password;
 
                     if (string.IsNullOrEmpty(name) && ARTEnrollLoginStatus=="Fail")
                     {
@@ -182,9 +183,10 @@ namespace CoreBot.Model
                     }
 
                     if (!string.IsNullOrEmpty(name) && IsLoginEnrolled)
-                    {
+                     {
                         DateTime dt = DateTime.Now;
                         artEnrollSessionModel.IsSkipIntro = true;
+                        artEnrollSessionModel.IsLoginEnrolled = false;
                         db.StringSet(cacheKey, JsonConvert.SerializeObject(artEnrollSessionModel));
                         db.KeyExpire(cacheKey, dt.AddMinutes(60));
                         var text = $"Your enrollment login is successful.";
@@ -201,7 +203,8 @@ namespace CoreBot.Model
                             sessionModels.UserID = userId;
                             sessionModels.LastName = LastName;
                             sessionModels.IsSkipIntro = IsSkipIntro;
-                            sessionModels.IsLoginEnrolled = false;
+                            sessionModels.IsLoginEnrolled = true;
+                            sessionModels.Password = password;
                         }
 
                         await UserState1.SaveChangesAsync(_turnContext, false, _cancellationToken);

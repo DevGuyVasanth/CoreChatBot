@@ -5,7 +5,7 @@
   "body": [
     {
       "type": "TextBlock",
-      "text": "Great Now lets finish up your enrollment.Select one of the following to unlock your Account",
+      "text": "Would you like to register to use a one-time pin code sent to your mobile device for future unlocks and password resets?",
       "wrap": true
     }
   ],
@@ -13,8 +13,8 @@
 
     {
       "type": "Action.Submit",
-      "title": "One Time Pin Code",
-      "data": "One Time Pin Code"
+      "title": "Register for One-Time Pin",
+      "data": "Register for One-Time Pin"
 
     },
     {

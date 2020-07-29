@@ -61,7 +61,7 @@ namespace CoreBot.Dialogs
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
-                InitiateStepAsync,
+                //InitiateStepAsync,
                 MenuStepAsync,
                 IntroStepAsync,
                 ActStepAsync,
@@ -98,23 +98,27 @@ namespace CoreBot.Dialogs
             return adaptiveCardAttachment;
         }
 
-        private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        {
-            Incident incidentDetails = new Incident();
+        //private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        //{
+        //    Incident incidentDetails = new Incident();
 
-            if (incidentDetails.IncidentDesc == null)
-            {
-                var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
-                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-            }
+        //    if (incidentDetails.IncidentDesc == null)
+        //    {
+        //        var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
+        //        var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+        //        return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+        //    }
 
-            return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
-        }
+        //    return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
+        //}
 
         private async Task<DialogTurnResult> MenuStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+
             intentName = (string)stepContext.Result;
+            if (intentName == null)
+                intentName = "NONE";
+            
             IsinputCheck = false;
             if (!string.IsNullOrEmpty(intentName) || intentName.ToUpper() != "NONE")
             {
@@ -324,7 +328,7 @@ namespace CoreBot.Dialogs
                                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
                             }
                         }
-                        //return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
+                        return await stepContext.BeginDialogAsync(nameof(CreateIncidentDialog), new Incident(), cancellationToken);
                     }
 
                 }
@@ -466,7 +470,19 @@ namespace CoreBot.Dialogs
 
             // Restart the main dialog with a different message the second time around
             var promptMessage = "What else can I do for you?";
-            return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+            //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+
+            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
+            JObject json1 = JObject.Parse(adaptiveCardJson);
+            var adaptiveCardAttachment = new Attachment()
+            {
+                ContentType = "application/vnd.microsoft.card.adaptive",
+                Content = JsonConvert.DeserializeObject(json1.ToString()),
+            };
+            return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
+            //var promptMessage = adaptiveCardAttachment;
+            //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
 
 

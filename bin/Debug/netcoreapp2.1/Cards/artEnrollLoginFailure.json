@@ -5,7 +5,7 @@
   "body": [
     {
       "type": "TextBlock",
-      "text": "Hmm...somethings not right.",
+      "text": "Hmm… somethings not right. Would you like me to connect you to a live agent?",
       "wrap": true
     }
   ],

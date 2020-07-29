@@ -69,7 +69,7 @@ namespace CoreBot.Dialogs
             if (LoginUserID == otpDetails.EmpID)
             {
                 string json = "{\"UserID\":\"{UserID}\",\"Password\":\"null\",\"Activity\":\"\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"null\",\"QuestionAnswerModelList\":\"null\"}";
-                json = json.Replace("{UserID}", EmpID).Replace("{sessionId}", stepContext.Context.Activity.From.Id);
+                json = json.Replace("{UserID}", LoginUserID).Replace("{sessionId}", stepContext.Context.Activity.From.Id);
 
                 IsValidUser = await APIRequest.ValidateEnrollUser(json);
             }
@@ -115,7 +115,11 @@ namespace CoreBot.Dialogs
                 return await stepContext.PromptAsync(DlgEmpID, opts, cancellationToken);
             }
             else
+            {
+                var dt = "Great! Now let's finish up your enrollment.";
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text(dt), cancellationToken);
                 return await stepContext.NextAsync(otpDetails.EmpID, cancellationToken);
+            }
         }
 
         private static async Task<DialogTurnResult> ChoiceStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -123,6 +127,7 @@ namespace CoreBot.Dialogs
 
             if (EmpIDAttemptCount == 2 && !IsValidEmpID)
             {
+                EmpIDAttemptCount = 0;
                 string card = "\\Cards\\artEnrollValidError.json";
                 var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
                 var adaptiveCardAttachment = new Attachment()
@@ -153,7 +158,7 @@ namespace CoreBot.Dialogs
             //var otpDetails = (ArtOTP)stepContext.Options;
             //otpDetails.EmpID = details["Employeeid"].ToString();
             string botid = (string)stepContext.State["turn.Activity.From.Id"];
-
+            
             //ValidateEnrollUser
             //bool IsValidUser = true;//await APIRequest.ValidateEnrollUser(details["Employeeid"].ToString(), botid);
             //ValidateEnrollUser
@@ -196,14 +201,13 @@ namespace CoreBot.Dialogs
             return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> DecideOptionsStepAsync
-            (WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> DecideOptionsStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var otpDetails = (ArtOTP)stepContext.Options;
 
             string choice = (string)stepContext.Result;
 
-            if (choice == "One Time Pin Code")
+            if (choice == "Register for One-Time Pin")
             {
 
                 var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
@@ -212,6 +216,21 @@ namespace CoreBot.Dialogs
                 otpDetails.Password = sessionModels.Password;
 
                 return await stepContext.BeginDialogAsync(nameof(ARTEnrollFinalDialog), otpDetails, cancellationToken);
+            }
+            else if (choice == "I'll come back later")
+            {
+                var dt = "Sounds like a plan. When you've located your employee ID, you can finish the process with me or at your areas ART webpage \n\n https://art.ricoh-usa.com \n\n https://art.ricoh.ca \n\n https://art.ricoh-la.com";
+                //string msg = "Sounds like a plan. When you've located your employee ID, you can finish the process with me or at your areas ART webpage \n\n https://art.ricoh-usa.com \n\n https://art.ricoh.ca \n\n https://art.ricoh-la.com";
+                //await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(Respository.GenerateAdaptiveCardTextBlock1(msg)) }, cancellationToken);
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text(dt), cancellationToken);
+
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+            else if (choice == "No Thanks")
+            {
+                var dt = "No Problem, you can still enroll by answering security questions.";
+                await stepContext.Context.SendActivityAsync(MessageFactory.Text(dt), cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
             }
 
             return await stepContext.NextAsync(otpDetails.EmpID, cancellationToken);
@@ -243,18 +262,18 @@ namespace CoreBot.Dialogs
                 json = json.Replace("{UserID}", EmpID1).Replace("{sessionId}", botUseriD);
                 //Logger.LogError("before Validation -EmpIdValidation : " + json);
 
-                IsValidUser =  await APIRequest.ValidateEnrollUser(json);
+                IsValidUser = await APIRequest.ValidateEnrollUser(json);
                 // This condition is our validation rule. You can also change the value at this point.
                 //EmpNo = empid;
                 //Logger.LogError("after Validation -EmpIdValidation : " + json + " IsOTPValid : " + IsValidUser.ToString());
 
                 if (!IsValidUser && promptContext.AttemptCount == 1)
                 {
-                    await promptContext.Context.SendActivityAsync(MessageFactory.Text("That still isn't a valid employee ID number. Your employee ID number is the numeric number used to identify you here at Ricoh. If you need help locating this number, you can check in eBiz, on your pay stub or ask your manager for help."), cancellationToken);
+                    promptContext.Context.SendActivityAsync(MessageFactory.Text("That still isn't a valid employee ID number. Your employee ID number is the numeric number used to identify you here at Ricoh. If you need help locating this number, you can check in eBiz, on your pay stub or ask your manager for help."), cancellationToken);
                 }
                 if (!IsValidUser && promptContext.AttemptCount == 2)
                 {
-                    await promptContext.Context.SendActivityAsync(MessageFactory.Text("I'm not able to find that employee ID number.  Try again."), cancellationToken);
+                    //promptContext.Context.SendActivityAsync(MessageFactory.Text("I'm not able to find that employee ID number.  Try again."), cancellationToken);
 
                     EmpIDAttemptCount = promptContext.AttemptCount;
                     IsValidEmpID = IsValidUser;
@@ -266,12 +285,12 @@ namespace CoreBot.Dialogs
             {
                 if (!IsValidUser && promptContext.AttemptCount == 1)
                 {
-                    //await promptContext.Context.SendActivityAsync(MessageFactory.Text("That still isn't a valid employee ID number. Your employee ID number is the numeric number used to identify you here at Ricoh. If you need help locating this number, you can check in eBiz, on your pay stub or ask your manager for help."), cancellationToken);
+                    promptContext.Context.SendActivityAsync(MessageFactory.Text("That still isn't a valid employee ID number. Your employee ID number is the numeric number used to identify you here at Ricoh. If you need help locating this number, you can check in eBiz, on your pay stub or ask your manager for help."), cancellationToken);
                 }
-                
+
                 if (!IsValidUser && promptContext.AttemptCount == 2)
                 {
-                    //await promptContext.Context.SendActivityAsync(MessageFactory.Text("I'm not able to find that employee ID number.  Try again."), cancellationToken);
+                    //promptContext.Context.SendActivityAsync(MessageFactory.Text("It seems you are having trouble locating your employee ID number.  Do you want to speak with a live agent or come back and register once you have located your employee ID number?"), cancellationToken);
 
                     EmpIDAttemptCount = promptContext.AttemptCount;
                     IsValidEmpID = IsValidUser;

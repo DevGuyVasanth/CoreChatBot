@@ -14,23 +14,23 @@
           "value": "+91"
         },
         {
+          "title": "Canada",
+          "value": "+1"
+        },
+        {
           "title": "United States",
           "value": "+1"
         },
         {
           "title": "United Kingdom",
           "value": "+44"
-        },
-        {
-          "title": "Canada",
-          "value": "+1"
         }
       ],
       "id": "myCountry",
       "isMultiSelect": false,
       "style": "compact",
       "type": "Input.ChoiceSet",
-      "value": "1"
+      "value": "+1"
     }],
     "actions":
     [
