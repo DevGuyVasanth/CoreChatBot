@@ -120,6 +120,8 @@ E:\GitHub\CoreChatBot\obj\Debug\netcoreapp2.1\CoreBot.pdb
 E:\GitHub\CoreChatBot\obj\Debug\netcoreapp2.1\CoreBot.genruntimeconfig.cache
 E:\GitHub\CoreChatBot\obj\Debug\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\appsettings.Development.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artAccountNotLock.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artCaptcha.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artCard.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artChoice.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artCountryDrpDown.json
@@ -128,10 +130,14 @@ E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artEmpIdRetry.j
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artEnrollLoginFailure.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artEnrollSuccess.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artEnrollValidError.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artOTP.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artSecQn1.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artSecuritySuccess.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artTroubleAccount.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\artUserNotEnrolled.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\incidentCard.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\menuCard.json
+E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\Cards\menuCardWithoutLogin.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\CognitiveModels\FlightBooking.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\DeploymentTemplates\new-rg-parameters.json
 E:\GitHub\CoreChatBot_27_July_2020\bin\Debug\netcoreapp2.1\DeploymentTemplates\preexisting-rg-parameters.json
@@ -155,3 +161,4 @@ E:\GitHub\CoreChatBot_27_July_2020\obj\Debug\netcoreapp2.1\CoreBot.RazorTargetAs
 E:\GitHub\CoreChatBot_27_July_2020\obj\Debug\netcoreapp2.1\CoreBot.dll
 E:\GitHub\CoreChatBot_27_July_2020\obj\Debug\netcoreapp2.1\CoreBot.pdb
 E:\GitHub\CoreChatBot_27_July_2020\obj\Debug\netcoreapp2.1\CoreBot.genruntimeconfig.cache
+E:\GitHub\CoreChatBot_27_July_2020\obj\Debug\netcoreapp2.1\CoreBot.csprojAssemblyReference.cache

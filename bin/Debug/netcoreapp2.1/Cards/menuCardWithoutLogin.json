@@ -1,0 +1,33 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "spacing": "medium",
+      "size": "default",
+      "weight": "bolder",
+      "text": "Please Select anyone of the below option to proceed.",
+      "wrap": true,
+      "maxLines": 0
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Something's Broken",
+      "data": "ServiceNow"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "ART Account Management",
+      "data": "ART Account Management"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Chat with Live Agent",
+      "data": "LiveAgent"
+    }
+  ]
+}
