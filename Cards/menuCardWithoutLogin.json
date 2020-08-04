@@ -8,21 +8,26 @@
       "spacing": "medium",
       "size": "default",
       "weight": "bolder",
-      "text": "Hi, I'm Lola your virtual assistant.  Click Let's Chat below to get started, or if you're unable to connect to the network, click on ART Account Management.",
+      "text": "Please Select anyone of the below option to proceed.",
       "wrap": true,
       "maxLines": 0
     }
   ],
   "actions": [
     {
-      "type": "Action.OpenUrl",
-      "title": "Let's Chat",
-      "url": "http://192.168.225.144:16011/?botId={botId}&conversationid={conversationid}&request_Type=artMainLogin"
+      "type": "Action.Submit",
+      "title": "Something's Broken",
+      "data": "ServiceNow"
     },
     {
       "type": "Action.Submit",
       "title": "ART Account Management",
       "data": "ART Account Management"
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Chat with Live Agent",
+      "data": "LiveAgent"
     }
   ]
 }

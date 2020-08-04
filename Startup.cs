@@ -53,8 +53,10 @@ namespace CoreBot
             
             services.AddSingleton<UserProfileDialog>();
             services.AddSingleton<ARTEnrollFinalDialog>();
+            services.AddSingleton<ArtAccountUnlockWithLogin>();
+            services.AddSingleton<ArtAccountUnlockWithoutLogin>();
+            services.AddSingleton<ArtOTPDialog>();
 
-            
 
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();

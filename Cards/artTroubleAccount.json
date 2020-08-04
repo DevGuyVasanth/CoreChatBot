@@ -1,0 +1,24 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+
+  ],
+  "actions": [
+
+    {
+      "type": "Action.Submit",
+      "title": "Main Menu",
+      "data": "Main Menu"
+
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Chat with a Live Agent",
+      "data": "Chat with a Live Agent"
+
+    }
+
+  ]
+}

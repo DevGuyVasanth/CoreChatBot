@@ -1,4 +1,5 @@
 ﻿using CoreBot.Model;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -285,6 +286,47 @@ namespace CoreBot.Model
             return response1;
         }
 
+        public static async System.Threading.Tasks.Task<string> ValidateUserID(string json)
+        {
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"null\",\"Activity\":\"\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"null\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "51296").Replace("{sessionId}", "testing");
+            //Logger.LogError("ValidateEnrollUser : " + json + " token :  " + tokenNo);
+
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/ValidateUserID";
+                string tokenResNo = tokenNo.Result.ToString();
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    response = res1.Content.ReadAsStringAsync().Result;
+                    //Logger.LogError("ValidateEnrollUser : " + json + " token :  " + tokenNo + " response : "+ response);
+
+                    return response;
+                    //if (response.Contains("Invalid Userid"))
+                    //    return false;
+                    //else
+                    //    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message.ToString(); ;
+            }
+
+            return response;
+        }
+
         public static async System.Threading.Tasks.Task<bool> ValidateEnrollUser(string json)
         {
             var tokenNo = GetToken();
@@ -340,6 +382,47 @@ namespace CoreBot.Model
 
                 HttpClient rest1 = new HttpClient(restHandler);
                 var url1 = "http://192.168.225.144:16200/api/user/AuthorizeUserAndSendOTP";
+                string tokenResNo = tokenNo.Result.ToString();
+
+                rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                var content = new StringContent(JsonConvert.SerializeObject(json), Encoding.UTF8, "application/json");
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent(json, Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    response = res1.Content.ReadAsStringAsync().Result;
+                    ///Logger.LogError("SendOTP : " + json + " token :  " + tokenNo + " response : " + response);
+
+                    if (response.Contains("AuthorizationFailed"))
+                        return false;
+                    else
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static async System.Threading.Tasks.Task<bool> SendOTPForAuthorization(string json)
+        {
+            var tokenNo = GetToken();
+            string response = string.Empty;
+            //string json = "{\"UserID\":\"{UserID}\",\"Password\":\"{Password}\",\"Activity\":\"UserEnrollment\",\"sessionId\":\"{sessionId}\",\"sourceorigin\":\"1\",\"MobileNumber\":\"{MobileNumber}\",\"IsPrivate\":\"false\",\"IsRegisteredForOTP\":\"false\",\"CountryCode\":\"{CountryCode}\",\"QuestionAnswerModelList\":\"null\"}";
+            //json = json.Replace("{UserID}", "48123").Replace("{Password}", "Google@123").Replace("{sessionId}", "testing").Replace("{MobileNumber}", "9791829901").Replace("{CountryCode}", "91");
+            //Logger.LogError("SendOTP : " + json + " token :  " + tokenNo);
+
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://192.168.225.144:16200/api/user/SendOTPForAuthorization";
                 string tokenResNo = tokenNo.Result.ToString();
 
                 rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
@@ -447,5 +530,37 @@ namespace CoreBot.Model
 
             return secQns;
         }
+
+        public static async System.Threading.Tasks.Task<CaptchaResult> GetCaptcha()
+        {
+            CaptchaResult captchaResult = new CaptchaResult();
+            try
+            {
+                HttpClientHandler restHandler = new HttpClientHandler();
+                restHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                HttpClient rest1 = new HttpClient(restHandler);
+                var url1 = "http://localhost:3978/api/get-captcha-image";
+
+                //rest1.DefaultRequestHeaders.Add("Authorization", "bearer " + tokenResNo);
+
+                HttpResponseMessage res1 = await rest1.PostAsync(url1, new StringContent("", Encoding.UTF8, "application/json"));
+
+                if (res1.IsSuccessStatusCode)
+                {
+                    //response = res1.Content.ReadAsStringAsync().Result;
+                    //Logger.LogError("ValidateOTP : " + json + " token :  " + tokenNo + " response : " + response);
+
+                    captchaResult = JsonConvert.DeserializeObject<CaptchaResult>(res1.Content.ReadAsStringAsync().Result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return captchaResult;
+            }
+
+            return captchaResult;
+        }
+
     }
 }

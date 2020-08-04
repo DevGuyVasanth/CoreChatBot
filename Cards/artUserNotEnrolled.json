@@ -1,0 +1,27 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "It seems that you aren't registered in ART yet.  Would you like to speak with a live agent?",
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Main Menu",
+      "data": "Main Menu"
+
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Chat with Live Agent",
+      "data": "Chat with Live Agent"
+
+    }
+
+  ]
+}

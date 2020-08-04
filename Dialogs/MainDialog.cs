@@ -41,7 +41,7 @@ namespace CoreBot.Dialogs
         protected readonly BotState UserState1;
         //static string AdaptivePromptId = "adaptive";
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ArtEnrollmentDialog artEnrollment, ArtRegisterOTPDialog artRegisterOTP, UserProfileDialog userProfileDialog, ARTEnrollFinalDialog aRTEnrollFinalDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration, UserState userState)
+        public MainDialog(FlightBookingRecognizer luisRecognizer, CreateIncidentDialog createIncidentDialog, IncidentStatusDialog incidentStatusDialog, LastFiveINCDialog lastFiveINCDialog, ArtEnrollmentDialog artEnrollment, ArtRegisterOTPDialog artRegisterOTP, UserProfileDialog userProfileDialog, ARTEnrollFinalDialog aRTEnrollFinalDialog, ArtAccountUnlockWithLogin artAccountUnlockWithLogin, ArtAccountUnlockWithoutLogin artAccountUnlockWithoutLogin, ArtOTPDialog artOTPDialog, ILogger<MainDialog> logger, IConfiguration iconfiguration, UserState userState)
             : base(nameof(MainDialog))
         {
             _luisRecognizer = luisRecognizer;
@@ -57,7 +57,9 @@ namespace CoreBot.Dialogs
             AddDialog(artRegisterOTP);
             AddDialog(userProfileDialog);
             AddDialog(aRTEnrollFinalDialog);
-
+            AddDialog(artAccountUnlockWithLogin);
+            AddDialog(artAccountUnlockWithoutLogin);
+            AddDialog(artOTPDialog);
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
@@ -98,31 +100,31 @@ namespace CoreBot.Dialogs
             return adaptiveCardAttachment;
         }
 
-        //private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
-        //{
-        //    Incident incidentDetails = new Incident();
+        private async Task<DialogTurnResult> InitiateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            Incident incidentDetails = new Incident();
 
-        //    if (incidentDetails.IncidentDesc == null)
-        //    {
-        //        var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
-        //        var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-        //        return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
-        //    }
+            if (incidentDetails.IncidentDesc == null)
+            {
+                var messageText = stepContext.Options?.ToString() ?? "Hello this is Rida.your virtual assistant.what can i help you with today?";
+                var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
 
-        //    return await stepContext.NextAsync(incidentDetails.IncidentDesc, cancellationToken);
-        //}
+            return await stepContext.NextAsync(null, cancellationToken);
+        }
 
         private async Task<DialogTurnResult> MenuStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-
+            string card = string.Empty;
             intentName = (string)stepContext.Result;
             if (intentName == null)
                 intentName = "NONE";
-            
+
             IsinputCheck = false;
             if (!string.IsNullOrEmpty(intentName) || intentName.ToUpper() != "NONE")
             {
-                intentName = GetLuisJSON(intentName.ToLower());
+                //intentName = GetLuisJSON(intentName.ToLower());
                 //intentName = (string)stepContext.Result;
                 if (intentName.ToUpper() == "CREATE INCIDENT") // || intentName.ToUpper() != "CHECK INCIDENT STATUS" || intentName.ToUpper() != "RETRIEVE INCIDENTS" || intentName.ToUpper() != "TOP 5 INCIDENTS LIST" || intentName.ToUpper() != "RETRIEVE LAST 5 INCIDENTS")
                     IsinputCheck = true;
@@ -136,12 +138,26 @@ namespace CoreBot.Dialogs
                     IsinputCheck = true;
                 if (intentName.ToUpper() == "ART ENROLLMENT")
                     IsinputCheck = true;
+                if (intentName.ToUpper() == "ACCOUNT UNLOCK")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ONE TIME PIN CODE")
+                    IsinputCheck = true;
+
+                if (!IsinputCheck)
+                    intentName = GetLuisJSON(intentName.ToLower());
             }
+
+            var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
+            var sessionModels = await sessionModelsAccessors.GetAsync(stepContext.Parent.Context, () => new SessionModel());
+            if (string.IsNullOrWhiteSpace(sessionModels.DisplayName))
+                card = "\\Cards\\menuCardWithoutLogin.json";
+            else
+                card = "\\Cards\\menuCard.json";
 
             if (!IsinputCheck)
             {
                 Incident inc = new Incident();
-                var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
+                var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
                 JObject json = JObject.Parse(adaptiveCardJson);
                 var adaptiveCardAttachment = new Attachment()
                 {
@@ -159,6 +175,32 @@ namespace CoreBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            if (!string.IsNullOrEmpty(intentName) || intentName.ToUpper() != "NONE")
+            {
+                //intentName = GetLuisJSON(intentName.ToLower());
+                //intentName = (string)stepContext.Result;
+                intentName = (string)stepContext.Result;
+                if (intentName.ToUpper() == "CREATE INCIDENT") // || intentName.ToUpper() != "CHECK INCIDENT STATUS" || intentName.ToUpper() != "RETRIEVE INCIDENTS" || intentName.ToUpper() != "TOP 5 INCIDENTS LIST" || intentName.ToUpper() != "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "CHECK INCIDENT STATUS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "TOP 5 INCIDENTS LIST")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "RETRIEVE LAST 5 INCIDENTS")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ART ENROLLMENT")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ACCOUNT UNLOCK")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ONE TIME PIN CODE")
+                    IsinputCheck = true;
+
+                if (!IsinputCheck)
+                    intentName = GetLuisJSON(intentName.ToLower());
+            }
+
             if (!IsinputCheck)
             {
                 string card = string.Empty;
@@ -210,20 +252,21 @@ namespace CoreBot.Dialogs
                         //    // Failed rendering
                         //}
 
-                        string botid = (string)stepContext.State["turn.Activity.From.Id"];
-                        string conversationid = (string)stepContext.State["turn.Activity.Conversation.Id"];
+                        if (!string.IsNullOrWhiteSpace(card))
+                        {
+                            string botid = (string)stepContext.State["turn.Activity.From.Id"];
+                            string conversationid = (string)stepContext.State["turn.Activity.Conversation.Id"];
 
-                        Incident inc = new Incident();
-                        var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
-                        JObject json = JObject.Parse(adaptiveCardJson.Replace("{botID}", botid).Replace("{conversationid}", conversationid));
-                        adaptiveCardJson = adaptiveCardJson.Replace("{botId}", botid).Replace("{conversationid}", conversationid);
-                        var adaptiveCardAttachment = new Attachment()
-                        {
-                            ContentType = "application/vnd.microsoft.card.adaptive",
-                            Content = JsonConvert.DeserializeObject(adaptiveCardJson.ToString()),
-                        };
-                        if (inc.IncidentDesc == null && !string.IsNullOrWhiteSpace(card))
-                        {
+                            Incident inc = new Incident();
+                            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + card);
+                            JObject json = JObject.Parse(adaptiveCardJson.Replace("{botID}", botid).Replace("{conversationid}", conversationid));
+                            adaptiveCardJson = adaptiveCardJson.Replace("{botId}", botid).Replace("{conversationid}", conversationid);
+                            var adaptiveCardAttachment = new Attachment()
+                            {
+                                ContentType = "application/vnd.microsoft.card.adaptive",
+                                Content = JsonConvert.DeserializeObject(adaptiveCardJson.ToString()),
+                            };
+
                             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
                         }
                     }
@@ -271,6 +314,10 @@ namespace CoreBot.Dialogs
                     IsinputCheck = true;
                 if (intentName.ToUpper() == "ART ENROLLMENT")
                     IsinputCheck = true;
+                if (intentName.ToUpper() == "ACCOUNT UNLOCK")
+                    IsinputCheck = true;
+                if (intentName.ToUpper() == "ONE TIME PIN CODE")
+                    IsinputCheck = true;
 
                 if (!IsinputCheck)
                     intentName = GetLuisJSON(intentName.ToLower());
@@ -310,6 +357,23 @@ namespace CoreBot.Dialogs
                         //    return await stepContext.EndDialogAsync();
                         //else
                         return await stepContext.BeginDialogAsync(nameof(ArtEnrollmentDialog), new ArtOTP(), cancellationToken);
+                    }
+                    else if (intentName == "Account Unlock")
+                    {
+                        var sessionModelsAccessors = UserState1.CreateProperty<SessionModel>(nameof(SessionModel));
+                        var sessionModels = await sessionModelsAccessors.GetAsync(stepContext.Parent.Context, () => new SessionModel());
+                        if (string.IsNullOrEmpty(sessionModels.DisplayName))
+                        {
+                            return await stepContext.BeginDialogAsync(nameof(ArtAccountUnlockWithLogin), new ArtOTP(), cancellationToken);
+                        }
+                        else
+                        {
+                            return await stepContext.BeginDialogAsync(nameof(ArtAccountUnlockWithLogin), new ArtOTP(), cancellationToken);
+                        }
+                    }
+                    else if (intentName == "One Time Pin Code")
+                    {
+                        return await stepContext.BeginDialogAsync(nameof(ArtOTPDialog), new ArtOTP(), cancellationToken);
                     }
                     else
                     {
@@ -472,17 +536,17 @@ namespace CoreBot.Dialogs
             var promptMessage = "What else can I do for you?";
             //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
 
-            var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
-            JObject json1 = JObject.Parse(adaptiveCardJson);
-            var adaptiveCardAttachment = new Attachment()
-            {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(json1.ToString()),
-            };
-            return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            //var adaptiveCardJson = File.ReadAllText(Environment.CurrentDirectory + "\\Cards\\menuCard.json");
+            //JObject json1 = JObject.Parse(adaptiveCardJson);
+            //var adaptiveCardAttachment = new Attachment()
+            //{
+            //    ContentType = "application/vnd.microsoft.card.adaptive",
+            //    Content = JsonConvert.DeserializeObject(json1.ToString()),
+            //};
+            //return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
             //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = (Activity)MessageFactory.Attachment(adaptiveCardAttachment) }, cancellationToken);
             //var promptMessage = adaptiveCardAttachment;
-            //return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+            return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
         }
 
 

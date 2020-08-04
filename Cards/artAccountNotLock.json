@@ -1,0 +1,28 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Your account doesn't look to be locked.",
+      "wrap": true
+    }
+  ],
+  "actions": [
+
+    {
+      "type": "Action.Submit",
+      "title": "Reset Password",
+      "data": "Reset Password"
+
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Chat with a Live Agent",
+      "data": "Chat with a live agent"
+
+    }
+
+  ]
+}

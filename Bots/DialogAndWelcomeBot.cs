@@ -56,14 +56,17 @@ namespace CoreBot.Bots
                 // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    var welcomeCard = CreateAdaptiveCardAttachment();
+                    string botClientUserId = turnContext.Activity.From.Id;
+                    string botConversationId = turnContext.Activity.Conversation.Id;
+                    string botchannelID = turnContext.Activity.ChannelId;
+
+                    var welcomeCard = CreateAdaptiveCardAttachment(botClientUserId, botConversationId);
+                    
                     var response = MessageFactory.Attachment(welcomeCard);
                     await turnContext.SendActivityAsync(response, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
 
-                    string botClientUserId = turnContext.Activity.From.Id;
-                    string botConversationId = turnContext.Activity.Conversation.Id;
-                    string botchannelID = turnContext.Activity.ChannelId;
+                    
 
                     string cacheConnectionString = _iconfiguration["RedisCacheConnection"];
 
@@ -237,7 +240,7 @@ namespace CoreBot.Bots
         }
 
         // Load attachment from embedded resource.
-        private Attachment CreateAdaptiveCardAttachment()
+        private Attachment CreateAdaptiveCardAttachment(string botId,string conversationId)
         {
             var cardResourcePath = "CoreBot.Cards.welcomeCard.json";
 
@@ -246,6 +249,7 @@ namespace CoreBot.Bots
                 using (var reader = new StreamReader(stream))
                 {
                     var adaptiveCard = reader.ReadToEnd();
+                    adaptiveCard = adaptiveCard.Replace("{botId}", botId).Replace("{conversationid}", conversationId);
                     return new Attachment()
                     {
                         ContentType = "application/vnd.microsoft.card.adaptive",
